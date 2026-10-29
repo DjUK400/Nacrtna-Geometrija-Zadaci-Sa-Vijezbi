@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="sr-Latn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>Nacrtna geometrija</title>
+<style>
+:root{
+  --bg:#e8ecea;--paper:#fbfcfb;--ink:#182024;--ink-2:#4c575c;--rule:#c5cecb;
+  --grid-1:#e3e9e6;--grid-2:#cdd8d4;--h:#1d5fae;--f:#bb3a2b;--p:#1f774a;--n:#b86e00;
+  --f-head:"DIN Alternate","DIN Condensed",Bahnschrift,"Roboto Condensed","sans-serif-condensed","Arial Narrow",system-ui,sans-serif;
+  --f-body:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e1214;--paper:#151a1d;--ink:#e1e6e4;--ink-2:#a0abae;--rule:#2b3438;
+  --grid-1:#1b2124;--grid-2:#263034;--h:#72aaf1;--f:#f08574;--p:#63c590;--n:#f0b04f;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0e1214;--paper:#151a1d;--ink:#e1e6e4;--ink-2:#a0abae;--rule:#2b3438;
+  --grid-1:#1b2124;--grid-2:#263034;--h:#72aaf1;--f:#f08574;--p:#63c590;--n:#f0b04f;color-scheme:dark}
+
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(--f-body);
+  background-image:
+    linear-gradient(var(--grid-1) 1px,transparent 1px),linear-gradient(90deg,var(--grid-1) 1px,transparent 1px),
+    linear-gradient(var(--grid-2) 1px,transparent 1px),linear-gradient(90deg,var(--grid-2) 1px,transparent 1px);
+  background-size:10px 10px,10px 10px,50px 50px,50px 50px}
+sub{font-size:.72em;line-height:0;vertical-align:-.22em}
+.page{max-width:880px;margin:0 auto;padding:32px max(16px,env(safe-area-inset-right,0px)) 48px max(16px,env(safe-area-inset-left,0px))}
+.eyebrow{font-family:var(--f-head);font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);margin:0 0 4px}
+h1{font-family:var(--f-head);font-weight:700;font-size:clamp(28px,7vw,42px);line-height:1.05;margin:0 0 10px;text-wrap:balance}
+.lede{margin:0 0 26px;max-width:58ch;color:var(--ink-2)}
+.list{display:grid;gap:14px;margin:0;padding:0;list-style:none}
+.card{display:grid;grid-template-columns:auto minmax(0,1fr);text-decoration:none;color:inherit;
+  background:var(--paper);border:1.5px solid var(--ink);transition:transform .15s,box-shadow .15s}
+.card:hover,.card:focus-visible{transform:translate(-2px,-2px);box-shadow:4px 4px 0 var(--accent);outline:none}
+.num{display:flex;flex-direction:column;justify-content:center;align-items:center;width:104px;box-sizing:border-box;padding:10px 8px;text-align:center;
+  border-right:1px solid var(--ink);border-left:6px solid var(--accent)}
+.num b{font-family:var(--f-head);font-size:32px;line-height:1;font-variant-numeric:tabular-nums}
+.num span{font-family:var(--f-head);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+.body{padding:12px 14px;min-width:0}
+.body h2{font-family:var(--f-head);font-size:17px;letter-spacing:.04em;text-transform:uppercase;line-height:1.2;margin:0 0 3px}
+.body p{margin:0;font-size:14px;color:var(--ink-2)}
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.tags span{font-family:var(--f-head);font-size:12px;padding:1px 7px;border:1px solid var(--rule);border-radius:3px;font-variant-numeric:tabular-nums}
+footer{margin-top:28px;font-size:12.5px;color:var(--ink-2)}
+@media (prefers-reduced-motion:reduce){.card{transition:none}.card:hover{transform:none}}
+</style>
+</head>
+<body>
+<main class="page">
+  <p class="eyebrow">Građevinski fakultet · zadaci sa vježbi</p>
+  <h1>Nacrtna geometrija</h1>
+  <p class="lede">Izaberi vježbu. Svaka stranica ima zadatke korak po korak, uz opciju Sve za gotov crtež.</p>
+
+  <ul class="list">
+    <li><a class="card" href="vjezba-2.1/" style="--accent:var(--h)">
+      <div class="num"><b>2.1</b><span>vježba</span></div>
+      <div class="body">
+        <h2>Kosa i ortogonalna projekcija prave</h2>
+        <p>Prava a kroz tačke A i B i prava upravna na profilnicu.</p>
+        <div class="tags"><span>O<sub>1</sub></span><span>O<sub>2</sub></span><span>O<sub>3</sub></span><span>O<sub>4</sub></span></div>
+      </div></a></li>
+
+    <li><a class="card" href="vjezba-2.2/" style="--accent:var(--p)">
+      <div class="num"><b>2.2</b><span>vježba</span></div>
+      <div class="body">
+        <h2>Ortogonalna projekcija</h2>
+        <p>Prave a, b i c kroz tačku A(3; 4; 4) u sve tri projekcije.</p>
+        <div class="tags"><span>O<sub>5</sub></span></div>
+      </div></a></li>
+
+    <li><a class="card" href="vjezba-3/" style="--accent:var(--n)">
+      <div class="num"><b>3</b><span>listovi 3.1–3.2</span></div>
+      <div class="body">
+        <h2>Ravan u kosoj i ortogonalnoj projekciji</h2>
+        <p>Tragovi ravni, horizontala i obaranje, nagibnice i presjek tri ravni.</p>
+        <div class="tags"><span>O<sub>1</sub></span><span>O<sub>2</sub></span><span>O<sub>3</sub></span><span>O<sub>4</sub></span><span>O<sub>5</sub></span></div>
+      </div></a></li>
+
+    <li><a class="card" href="vjezba-4/" style="--accent:var(--f)">
+      <div class="num"><b>4</b><span>listovi 4.1–4.2</span></div>
+      <div class="body">
+        <h2>Normala i ravan u ortogonalnoj projekciji</h2>
+        <p>Simetralna ravan, normalne ravni, presjek ravni i trougla, udaljenost tačke od ravni.</p>
+        <div class="tags"><span>O<sub>1</sub></span><span>O<sub>2</sub></span><span>O<sub>4</sub></span><span>O<sub>5</sub></span><span>O<sub>6</sub></span></div>
+      </div></a></li>
+  </ul>
+
+  <footer>Stefan Đukić</footer>
+</main>
+</body>
+</html>
