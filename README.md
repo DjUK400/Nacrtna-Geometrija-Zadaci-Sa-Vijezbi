@@ -1,5 +1,7 @@
 # Nacrtna geometrija – zadaci sa vježbi
 
+> Dio kolekcije **Aplikacije za fakultet**: https://djuk400.github.io/
+
 Stranica:  https://djuk400.github.io/Nacrtna-Geometrija-Zadaci-Sa-Vijezbi/
 | Folder | Sadržaj |
 |---|---|
