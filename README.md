@@ -1,7 +1,6 @@
 # Nacrtna geometrija – zadaci sa vježbi
 
-Stranica: https://djuk400.github.io/Nacrtna-Geometrija-Zadatci-Sa-Vijezbi/
-
+Stranica:  https://djuk400.github.io/Nacrtna-Geometrija-Zadaci-Sa-Vijezbi/
 | Folder | Sadržaj |
 |---|---|
 | `vjezba-2.1/` | Kosa i ortogonalna projekcija prave (O1–O4) |
