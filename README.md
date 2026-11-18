@@ -11,5 +11,6 @@ Stranica:  https://djuk400.github.io/Nacrtna-Geometrija-Zadaci-Sa-Vijezbi/
 | `vjezba-4/` | Normala i ravan u ortogonalnoj projekciji, listovi 4.1–4.2 (O1, O2, O4–O6) |
 | `vjezba-5/` | Presjek figura i udaljenosti u ortogonalnoj projekciji, listovi 5.1–5.2 (O1–O4) |
 | `vjezba-6/` | Transformacija ravni projekcije, listovi 6.1–6.2 (6.1: O1–O3, 6.2: O1–O2) |
+| `priprema-k1-transformacije/` | Priprema za K1: svi metrički zadaci sa vježbi riješeni transformacijom, u tabovima |
 
 Nova vježba: novi folder `vjezba-N/` sa `index.html` + nova kartica u glavnom `index.html`.

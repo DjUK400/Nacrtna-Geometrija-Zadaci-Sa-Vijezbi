@@ -1,0 +1,690 @@
+<!doctype html>
+<html lang="sr-Latn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>Priprema za K1 · Transformacija</title>
+<meta name="description" content="Nacrtna geometrija: svi metrički zadaci sa vježbi 2.1–6 riješeni transformacijom ravni projekcije, sa crtežima korak po korak. Priprema za prvi kolokvijum.">
+<style>
+/* Crtaći list: milimetarski papir. Plava = H i prva projekcija, crvena = F i druga, ljubičasta = nove ose i transformacija, narandžasta = rezultat. */
+:root{
+  --bg:#e8ecea;--paper:#fbfcfb;--ink:#182024;--ink-2:#4c575c;--rule:#c5cecb;
+  --grid-1:#e6ebe8;--grid-2:#d3dcd8;--con:#7c898e;--focus:#1d5fae;
+  --h:#1d5fae;--f:#bb3a2b;--p:#1f774a;--n:#b86e00;--o:#7a40b8;--tint:.10;
+  --res:#c25a00;--res2:#1f774a;
+  --f-head:"Barlow Semi Condensed","Roboto Condensed","Arial Narrow",system-ui,sans-serif;
+  --f-body:"Source Sans 3",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --f-lab:"Times New Roman",Times,"Liberation Serif","Nimbus Roman",serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e1214;--paper:#151a1d;--ink:#e1e6e4;--ink-2:#a0abae;--rule:#2b3438;
+  --grid-1:#1b2225;--grid-2:#253034;--con:#7d898e;--focus:#80b3f3;
+  --h:#72aaf1;--f:#f08574;--p:#63c590;--n:#f0b04f;--o:#c39bf2;--tint:.16;
+  --res:#f5a05a;--res2:#63c590;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0e1214;--paper:#151a1d;--ink:#e1e6e4;--ink-2:#a0abae;--rule:#2b3438;
+  --grid-1:#1b2225;--grid-2:#253034;--con:#7d898e;--focus:#80b3f3;
+  --h:#72aaf1;--f:#f08574;--p:#63c590;--n:#f0b04f;--o:#c39bf2;--tint:.16;
+  --res:#f5a05a;--res2:#63c590;color-scheme:dark}
+
+/* ---------- crtež ---------- */
+.drw{display:block;width:100%;height:auto;background:var(--paper)}
+.drw .paper{stroke:none}
+.drw .grid{fill:none;stroke:var(--grid-1);stroke-width:.25}
+.drw line,.drw path{fill:none;stroke-linecap:round}
+.drw .ax{stroke:var(--ink);stroke-width:.45}
+.drw .newax{stroke:var(--o);stroke-width:.55}
+.drw .ord{stroke:var(--con);stroke-width:.22;stroke-dasharray:1.2 .9}
+.drw .h{stroke:var(--h);stroke-width:.45}
+.drw .f{stroke:var(--f);stroke-width:.45}
+.drw .trH{stroke:var(--h);stroke-width:.5}
+.drw .trF{stroke:var(--f);stroke-width:.5}
+.drw .trH.r,.drw .trF.r{stroke-dasharray:3 1.2}
+.drw .hz,.drw .fr{stroke:var(--p);stroke-width:.4;stroke-dasharray:2.2 .9}
+.drw .res{stroke:var(--res);stroke-width:.65}
+.drw .res2{stroke:var(--res2);stroke-width:.55}
+.drw .nrm{stroke:var(--n);stroke-width:.45}
+.drw .thick{stroke-width:.8}
+.drw .bis{stroke:var(--o);stroke-width:.25;stroke-dasharray:1.5 .8}
+.drw .circ{fill:none;stroke:var(--res);stroke-width:.4}
+.drw .arc{stroke:var(--res);stroke-width:.35}
+.drw .tri{stroke:none}
+.drw .t1{fill:var(--h);fill-opacity:var(--tint)}
+.drw .t2{fill:var(--f);fill-opacity:var(--tint)}
+.drw .tv{fill:var(--res);fill-opacity:.16;stroke:var(--res);stroke-width:.55}
+.drw .edge{stroke:var(--ink-2);stroke-width:.35}
+.drw .e1{stroke:var(--h);stroke-width:.45}
+.drw .e2{stroke:var(--f);stroke-width:.45}
+.drw .hid{stroke-dasharray:1.4 1;stroke-width:.3;opacity:.85}
+.drw .s0{stroke:var(--ink);stroke-width:.4}
+.drw .sline{stroke:var(--ink);stroke-width:.5}
+.drw .cut{stroke:var(--res);stroke-width:1}
+.drw .pt{fill:var(--ink)}
+.drw .pt.key{fill:var(--res)}
+.drw .pt.o{fill:var(--ink)}
+.drw text{font-family:var(--f-lab);font-size:3.4px;font-style:italic;fill:var(--ink);paint-order:stroke;stroke:var(--paper);stroke-width:.9px;stroke-linejoin:round}
+.drw text.dim{font-style:normal;font-family:var(--f-body);font-size:2.8px;fill:var(--ink-2)}
+.drw text.ang{fill:var(--res);font-size:3.8px;font-weight:700}
+.drw tspan.sup,.drw tspan.sub{font-size:2.4px;font-style:normal}
+
+.drw .el{transition:opacity .2s}
+.drw .el.off{display:none}
+.drw .el.past{opacity:.38}
+@media (prefers-reduced-motion:reduce){.drw .el{transition:none}}
+
+/* Stranica: jedna kolona kao radna sveska, crteži na milimetarskom papiru, tabela odluke na vrhu. */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 var(--f-body)}
+sub{font-size:.72em;line-height:0;vertical-align:-.22em}
+a{color:var(--h);text-underline-offset:2px}
+.page{max-width:900px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 56px}
+.eyebrow{font-family:var(--f-head);font-weight:600;font-size:13px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-2);margin:0 0 6px}
+h1{font-family:var(--f-head);font-weight:700;font-size:clamp(30px,7.5vw,46px);line-height:1.02;margin:0 0 12px;text-wrap:balance}
+h2{font-family:var(--f-head);font-weight:700;font-size:clamp(23px,5vw,30px);line-height:1.1;margin:0 0 10px;text-wrap:balance}
+h3{font-family:var(--f-head);font-weight:600;font-size:20px;line-height:1.2;margin:26px 0 8px;text-wrap:balance}
+p{margin:0 0 12px;max-width:68ch}
+.lede{font-size:17.5px;color:var(--ink-2);max-width:62ch}
+section{padding-top:38px;margin-top:38px;border-top:1.5px solid var(--ink)}
+section>.sn{font-family:var(--f-head);font-weight:600;font-size:13px;letter-spacing:.09em;text-transform:uppercase;color:var(--o);margin:0 0 4px}
+ul,ol{margin:0 0 14px;padding-left:22px;max-width:68ch}
+li{margin:0 0 6px}
+li::marker{color:var(--ink-2)}
+b,strong{font-weight:700}
+.k{font-family:var(--f-lab);font-style:italic;font-size:1.06em}
+.box{background:var(--paper);border:1px solid var(--rule);border-left:4px solid var(--o);padding:14px 16px;margin:16px 0;max-width:72ch}
+.box.warn{border-left-color:var(--n)}
+.box p:last-child,.box ul:last-child{margin-bottom:0}
+.box h4{font-family:var(--f-head);font-size:15px;letter-spacing:.06em;text-transform:uppercase;margin:0 0 6px}
+.tw{overflow-x:auto;margin:14px 0 18px;border:1.5px solid var(--ink);background:var(--paper)}
+table{border-collapse:collapse;width:100%;min-width:600px;font-size:15px}
+th,td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--rule)}
+th{font-family:var(--f-head);font-weight:600;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2);background:var(--bg)}
+tr:last-child td{border-bottom:none}
+td.num{text-align:center;font-family:var(--f-head);font-weight:700;font-size:18px;font-variant-numeric:tabular-nums;color:var(--o)}
+td a{white-space:nowrap}
+.rules{counter-reset:r;list-style:none;padding:0;display:grid;gap:10px;max-width:72ch}
+.rules li{counter-increment:r;display:grid;grid-template-columns:34px minmax(0,1fr);gap:10px;margin:0;align-items:start}
+.rules li::before{content:counter(r);font-family:var(--f-head);font-weight:700;font-size:22px;line-height:1.1;color:var(--o);text-align:right}
+.four{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:12px;margin:14px 0}
+.card{background:var(--paper);border:1.5px solid var(--ink);padding:12px 14px;min-width:0}
+.card .z{font-family:var(--f-head);font-weight:700;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--o)}
+.card h4{font-family:var(--f-head);font-size:19px;margin:2px 0 6px;line-height:1.15}
+.card p{font-size:15px;margin:0 0 6px}
+.card .rule{font-family:var(--f-head);font-weight:600;font-size:16px;color:var(--ink);margin:0}
+/* primjer */
+.ex{margin:20px 0 8px;border:1.5px solid var(--ink);background:var(--paper)}
+.ex-head{padding:12px 14px 10px;border-bottom:1px solid var(--rule)}
+.tag{font-family:var(--f-head);font-weight:600;font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+.ex-task{margin:4px 0 6px;font-weight:600}
+.ex-data{margin:0;font-variant-numeric:tabular-nums;font-size:15px;color:var(--ink-2)}
+.ctrl{display:flex;flex-wrap:wrap;gap:6px;padding:10px 14px;border-bottom:1px solid var(--rule);position:sticky;top:env(safe-area-inset-top,0px);background:var(--paper);z-index:2}
+.sb{font:600 15px/1 var(--f-head);min-width:40px;height:36px;padding:0 10px;border:1px solid var(--rule);border-radius:4px;background:var(--bg);color:var(--ink);cursor:pointer;font-variant-numeric:tabular-nums}
+.sb:hover{border-color:var(--ink-2)}
+.sb:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
+.sb.on{background:var(--o);border-color:var(--o);color:var(--paper)}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border-bottom:1px solid var(--rule);background:var(--paper)}
+.scroll .drw{margin:0 auto}
+.steps{margin:0;padding:12px 14px 4px 38px;max-width:none;font-size:15px}
+.steps li{padding:4px 6px;margin:0 0 4px;border-radius:3px;cursor:pointer}
+.steps li.cur{background:color-mix(in srgb,var(--o) 14%,transparent);outline:1px solid color-mix(in srgb,var(--o) 45%,transparent)}
+.results{margin:0;padding:8px 14px 12px;display:grid;gap:4px;border-top:1px solid var(--rule)}
+.rr{display:grid;grid-template-columns:minmax(96px,150px) minmax(0,1fr);gap:10px;font-size:15px}
+.rr dt{font-family:var(--f-head);font-weight:600;color:var(--ink-2);text-transform:uppercase;font-size:12.5px;letter-spacing:.06em;padding-top:2px}
+.rr dd{margin:0;font-variant-numeric:tabular-nums}
+.note{margin:0;padding:10px 14px 12px;font-size:14.5px;color:var(--ink-2);border-top:1px dashed var(--rule)}
+.hint{font-size:13.5px;color:var(--ink-2);margin:6px 0 0}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:12px;margin:12px 0}
+.two .box{margin:0}
+footer{margin-top:44px;padding-top:16px;border-top:1px solid var(--rule);font-size:13.5px;color:var(--ink-2)}
+footer p{max-width:80ch}
+
+section{padding-top:0;margin-top:0;border-top:0}
+.panel{padding-top:6px}
+.h2b{margin-top:34px;padding-top:22px;border-top:1.5px solid var(--ink)}
+.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);margin:22px 0 20px;padding-top:8px;
+  flex-wrap:nowrap!important;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.tabs::-webkit-scrollbar{display:none}
+.tabs>button{flex:0 0 auto;font:600 16px/1.3 var(--f-head);color:var(--ink-2);background:transparent;padding:8px 12px;border:1.5px solid transparent;border-bottom:0;border-radius:6px 6px 0 0;cursor:pointer;white-space:nowrap}
+.tabs>button:hover{color:var(--ink)}
+.tabs>button.on{color:var(--ink);background:var(--paper);border-color:var(--ink)}
+.tabs>button:focus-visible{outline:2px solid var(--focus);outline-offset:-2px}
+.tabs{display:flex;gap:6px;box-shadow:inset 0 -1.5px 0 var(--ink)}
+:root body .tabs.fk-tabs{background:var(--bg);position:sticky;top:env(safe-area-inset-top,0px);z-index:5;flex-wrap:nowrap;margin:18px 0 20px;padding-top:8px}
+.ctrl{top:calc(env(safe-area-inset-top,0px) + 52px)}
+.next{margin:30px 0 0;padding-top:14px;border-top:1px solid var(--rule);display:flex;justify-content:flex-end}
+.nextb{font:600 16px/1.2 var(--f-head);color:var(--paper);background:var(--ink);border:1.5px solid var(--ink);border-radius:4px;padding:10px 16px;cursor:pointer}
+.nextb:hover{background:var(--o);border-color:var(--o)}
+.nextb:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+@media (max-width:520px){.rr{grid-template-columns:1fr;gap:0}.rr dd{margin-bottom:6px}}
+</style>
+
+<!--fk-dizajn:start-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=STIX+Two+Text:ital,wght@0,400;0,600;1,400&display=swap">
+<style id="fk-dizajn">/* Zajednički dizajn svih aplikacija (izvor: djuk400.github.io/dizajn) */
+:root{--fk-bg:#e9edeb;--fk-paper:#fbfcfa;--fk-ink:#16202a;--fk-ink2:#4b5761;--fk-rule:#c8d1ce;--fk-chip:#eef2f0;--fk-grid:#e4eae7;--fk-grid5:#ccd7d3;--fk-blue:#1c5aa8;--fk-blue-bg:#e6eef8;--fk-red:#b33a28;--fk-ok:#1f6e44;--fk-ok-bg:#e6f2ea;--fk-warn:#8a5a00;--fk-warn-bg:#fbf1dc;--fk-err:#a8261c;--fk-err-bg:#fbecea;--fk-h:#1d5fae;--fk-f:#bb3a2b;--fk-p:#1f774a;--fk-n:#b86e00;--fk-o:#7a40b8;
+  --fk-head:"Barlow Semi Condensed","Arial Narrow",system-ui,sans-serif;
+  --fk-body:"Source Sans 3",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --fk-math:"STIX Two Text","Times New Roman",Times,serif}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--fk-bg:#0e1215;--fk-paper:#151a1e;--fk-ink:#e2e7e5;--fk-ink2:#a1acb1;--fk-rule:#2b353a;--fk-chip:#1c2327;--fk-grid:#1b2226;--fk-grid5:#263035;--fk-blue:#7cb0f2;--fk-blue-bg:#172333;--fk-red:#f2907b;--fk-ok:#6fcf98;--fk-ok-bg:#15291e;--fk-warn:#f0b75a;--fk-warn-bg:#2e2412;--fk-err:#ff8f80;--fk-err-bg:#2c1714;--fk-h:#72aaf1;--fk-f:#f08574;--fk-p:#63c590;--fk-n:#f0b04f;--fk-o:#c39bf2;color-scheme:dark}}
+:root[data-theme="dark"]{--fk-bg:#0e1215;--fk-paper:#151a1e;--fk-ink:#e2e7e5;--fk-ink2:#a1acb1;--fk-rule:#2b353a;--fk-chip:#1c2327;--fk-grid:#1b2226;--fk-grid5:#263035;--fk-blue:#7cb0f2;--fk-blue-bg:#172333;--fk-red:#f2907b;--fk-ok:#6fcf98;--fk-ok-bg:#15291e;--fk-warn:#f0b75a;--fk-warn-bg:#2e2412;--fk-err:#ff8f80;--fk-err-bg:#2c1714;--fk-h:#72aaf1;--fk-f:#f08574;--fk-p:#63c590;--fk-n:#f0b04f;--fk-o:#c39bf2;color-scheme:dark}
+/* gornja traka: povratak na sve aplikacije + tema */
+.fk-bar{box-sizing:border-box;max-width:var(--fk-w,1080px);margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:10px max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px));
+  font:600 13px/1.2 var(--fk-head);letter-spacing:.07em;text-transform:uppercase}
+.fk-crumbs{display:flex;flex-wrap:wrap;align-items:center;gap:2px 8px;min-width:0}
+.fk-crumbs a{color:var(--fk-ink2);text-decoration:none;padding:6px 0}
+.fk-crumbs a:hover{color:var(--fk-ink);text-decoration:underline;text-underline-offset:3px}
+.fk-crumbs span{color:var(--fk-rule)}
+.fk-bar button{flex:none;display:inline-flex;align-items:center;gap:6px;font:inherit;letter-spacing:inherit;text-transform:inherit;color:var(--fk-ink2);background:transparent;
+  border:1px solid var(--fk-rule);border-radius:4px;padding:5px 10px;min-height:32px;cursor:pointer}
+.fk-bar button:hover{color:var(--fk-ink);border-color:var(--fk-ink2)}
+.fk-bar a:focus-visible,.fk-bar button:focus-visible{outline:2px solid var(--fk-blue);outline-offset:2px}
+/* zaglavlje */
+:root body .fk-eyebrow{font:600 13px/1.3 var(--fk-head);letter-spacing:.09em;text-transform:uppercase;color:var(--fk-ink2);margin:0 0 4px}
+:root body .fk-h1{font-family:var(--fk-head);font-weight:700;font-size:clamp(28px,7vw,42px);line-height:1.05;letter-spacing:0;margin:0 0 8px;color:var(--fk-ink);text-wrap:balance}
+:root body .fk-lede{display:block;margin:0 0 18px;max-width:64ch;color:var(--fk-ink2);font:400 16px/1.5 var(--fk-body)}
+/* tabovi kao kartoteka */
+:root body .fk-tabs{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 18px;padding:0;background:transparent;border:0;border-radius:0;box-shadow:inset 0 -1.5px 0 var(--fk-ink)}
+:root body .fk-tabs>button,:root body .fk-tabs>a{flex:0 0 auto;font:600 16px/1.3 var(--fk-head);letter-spacing:.02em;color:var(--fk-ink2);background:transparent;
+  padding:8px 12px 8px;border:1.5px solid transparent;border-bottom:0;border-radius:6px 6px 0 0;cursor:pointer;white-space:nowrap;text-decoration:none}
+:root body .fk-tabs>button:hover{color:var(--fk-ink);border-color:transparent}
+:root body .fk-tabs>.on,:root body .fk-tabs>[aria-selected="true"]{color:var(--fk-ink);background:var(--fk-paper);border-color:var(--fk-ink);font-weight:600}
+:root{--fk-w:900px}
+
+:root:root:root{--bg:var(--fk-bg);--paper:var(--fk-paper);--ink:var(--fk-ink);--ink-2:var(--fk-ink2);--rule:var(--fk-rule);
+  --grid-1:var(--fk-grid);--grid-2:var(--fk-grid5);--h:var(--fk-h);--f:var(--fk-f);--p:var(--fk-p);--n:var(--fk-n);--o:var(--fk-o);
+  --f-head:var(--fk-head);--f-body:var(--fk-body);--f-lab:var(--fk-math)}
+html body{font-size:16px}
+html .eyebrow{font-weight:600;letter-spacing:.09em}
+html .page{padding-top:22px}
+html .tabs{margin-top:18px}
+</style>
+<script>(function(){var r=document.documentElement,k='fk-theme';try{var t=localStorage.getItem(k);if(t)r.dataset.theme=t}catch(e){}document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('#fk-theme');if(!b)return;var d=r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;r.dataset.theme=d?'light':'dark';try{localStorage.setItem(k,r.dataset.theme)}catch(e){}});})();</script>
+<!--fk-dizajn:end-->
+</head>
+<body>
+<!--fk-bar:start--><nav class="fk-bar" aria-label="Navigacija"><div class="fk-crumbs"><a href="https://djuk400.github.io/">← Sve aplikacije</a><span aria-hidden="true">/</span><a href="../">Nacrtna – vježbe</a></div><button type="button" id="fk-theme" aria-label="Svijetla ili tamna tema"><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.3" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.7a6.3 6.3 0 0 1 0 12.6z" fill="currentColor"/></svg>Tema</button></nav><!--fk-bar:end-->
+<main class="page">
+<p class="eyebrow">Nacrtna geometrija · vježbe 2.1–6 · priprema za K1</p>
+<h1>Transformacija ravni projekcije</h1>
+<p class="lede">Svi metrički zadaci sa vježbi riješeni jednom metodom: transformacijom. Prvi tab je tabela koja kaže koji postupak ide za koji zahtjev. Zatim idu pravila, pa tabovi sa riješenim primjerima i brojevima sa vježbi, da možeš provjeriti svoj crtež.</p>
+
+
+<nav class="tabs fk-tabs" role="tablist" aria-label="Poglavlja">
+  <button type="button" role="tab" id="t-tabela" aria-controls="tabela" data-tab="tabela" class="on" aria-selected="true">Šta se traži</button>
+  <button type="button" role="tab" id="t-pravila" aria-controls="pravila" data-tab="pravila" aria-selected="false">Pravila</button>
+  <button type="button" role="tab" id="t-prava" aria-controls="prava" data-tab="prava" aria-selected="false">Prava</button>
+  <button type="button" role="tab" id="t-ravan" aria-controls="ravan" data-tab="ravan" aria-selected="false">Ravan i trougao</button>
+  <button type="button" role="tab" id="t-udaljenosti" aria-controls="udaljenosti" data-tab="udaljenosti" aria-selected="false">Udaljenosti</button>
+  <button type="button" role="tab" id="t-uglovi" aria-controls="uglovi" data-tab="uglovi" aria-selected="false">Ugao ravni</button>
+  <button type="button" role="tab" id="t-presjeci" aria-controls="presjeci" data-tab="presjeci" aria-selected="false">Presjeci</button>
+  <button type="button" role="tab" id="t-osnove" aria-controls="osnove" data-tab="osnove" aria-selected="false">Bez transformacije</button>
+  <button type="button" role="tab" id="t-greske" aria-controls="greske" data-tab="greske" aria-selected="false">Greške</button>
+  <button type="button" role="tab" id="t-k1" aria-controls="k1" data-tab="k1" aria-selected="false">Plan za K1</button>
+</nav>
+
+<section id="tabela" class="panel" role="tabpanel" aria-labelledby="t-tabela">
+<p class="sn">Početak</p>
+<h2>Šta se traži → koja transformacija</h2>
+<p>Pročitaj šta zadatak traži, nađi red u tabeli i odmah znaš kako postavljaš osu i koliko transformacija treba.</p>
+<div class="tw"><table>
+<thead><tr><th>Zadatak traži</th><th>Kako postaviti novu osu</th><th>Br.</th><th>Primjer</th></tr></thead>
+<tbody>
+<tr><td>Prava veličina duži, nagibni ugao prave prema H</td><td>x₁₃ ∥ a′, nanosi se z</td><td class="num">1</td><td><a href="#ex-d1">6.2 O₁</a></td></tr>
+<tr><td>Nagibni ugao prave prema F</td><td>x₂₃ ∥ a″, nanosi se y</td><td class="num">1</td><td><a href="#ex-d1">napomena</a></td></tr>
+<tr><td>Tačka na pravoj na zadatoj udaljenosti, dužina dijela prave u nekom oktantu</td><td>x₁₃ ∥ a′, mjeri se na a‴ pa vraća nazad</td><td class="num">1</td><td><a href="#ex-d1">6.2 O₁</a></td></tr>
+<tr><td>Udaljenost tačke od prave</td><td>x₁₃ ∥ a′, pa x₃₄ ⊥ a‴</td><td class="num">2</td><td><a href="#ex-d2">dodatno</a></td></tr>
+<tr><td>Ugao ravni (trougla) sa H</td><td>x₁₃ ⊥ h′ ili x₁₃ ⊥ T₁</td><td class="num">1</td><td><a href="#ex-d4">6.1 O₁</a></td></tr>
+<tr><td>Ugao ravni (trougla) sa F</td><td>x₂₃ ⊥ f″ ili x₂₃ ⊥ T₂</td><td class="num">1</td><td><a href="#ex-d3">6.2 O₂</a>, <a href="#ex-d7">5.1 O₂</a></td></tr>
+<tr><td>Udaljenost tačke od ravni ili od trougla</td><td>x₁₃ ⊥ h′ (ili ⊥ T₁), okomica na pravu ravni</td><td class="num">1</td><td><a href="#ex-d4">6.1 O₁</a></td></tr>
+<tr><td>Tačke na normali na ravan, na zadatoj udaljenosti</td><td>x₁₃ ⊥ T₁ (ili ⊥ h′)</td><td class="num">1</td><td><a href="#ex-d6">4.2 O₆</a></td></tr>
+<tr><td>Udaljenost dvije paralelne ravni</td><td>x₁₃ ⊥ T₁, razmak dvije paralelne prave</td><td class="num">1</td><td><a href="#ex-d7">5.1 O₂</a></td></tr>
+<tr><td>Ugao između dvije ravni</td><td>presječnica postaje tačka: 1 transformacija ako je horizontala ili frontala, inače 2</td><td class="num">1–2</td><td><a href="#ex-d8">6.1 O₂</a></td></tr>
+<tr><td>Prodor prave kroz ravan ili trougao, vidljivost</td><td>x₁₃ ⊥ h′ trougla</td><td class="num">1</td><td><a href="#ex-d9">4.2 O₄</a></td></tr>
+<tr><td>Presjek dva trougla (trougla i četvorougla), vidljivost</td><td>x₁₃ ⊥ h′ jednog trougla</td><td class="num">1</td><td><a href="#ex-d10">6.1 O₃</a></td></tr>
+<tr><td>Prava veličina trougla, uglovi, površina</td><td>x₁₃ ⊥ h′, pa x₃₄ ∥ trouglu (ili x₂₃ ⊥ f″, pa x₃₄)</td><td class="num">2</td><td><a href="#ex-d5">6.1 O₁</a>, <a href="#ex-d3">6.2 O₂</a></td></tr>
+<tr><td>Centar upisane ili opisane kružnice, kružnica</td><td>prava veličina, konstrukcija, pa vraćanje nazad</td><td class="num">2</td><td><a href="#ex-d5">K1 O₂ c</a></td></tr>
+</tbody></table></div>
+<div class="box warn">
+  <h4>Prije nego što kreneš</h4>
+  <ul>
+    <li>Pregledane su vježbe <b>2.1, 2.2, 3, 4, 5 i 6</b> sa tvog sajta. Vježba 1 nije objavljena, pa ovdje nije ni pregledana.</li>
+    <li>Transformacija zamjenjuje <b>obaranje, trougao razlike visina i pomoćnu projicirajuću ravan</b>. Ne zamjenjuje crtanje projekcija, prodore prave, tragove ravni, vidljivost i kosu projekciju. To moraš znati i dalje. Kratak podsjetnik je u dijelu <a href="#osnove">Bez transformacije</a>.</li>
+    <li>Oznake su kao na tvojim vježbama: osa x₁₂, nove ose x₁₃, x₂₃, x₃₄, projekcije A′, A″, A‴, A<sup>IV</sup>. Osa x ide udesno, prva projekcija je ispod ose, druga iznad.</li>
+  </ul>
+</div>
+<p class="hint">Br. = broj transformacija. Tabela se čita i obrnuto: ako vidiš „ravan transformacije upravna na H”, to je osa x₁₃; „upravna na F” je osa x₂₃.</p>
+<div class="next"><button type="button" class="nextb" data-go="pravila">Dalje: Pravila →</button></div>
+</section>
+
+<!-- ===================================================== -->
+<section id="pravila" class="panel" role="tabpanel" aria-labelledby="t-pravila" hidden>
+<p class="sn">Teorija</p>
+<h2>Pravila transformacije</h2>
+<p>Transformacija ne mijenja tijelo nego posmatrača. Uvodiš novu ravan projekcije P₃ koja je okomita na jednu od postojećih ravni, H ili F, i postavljaš je tako da se traženi element u njoj vidi lako: duž u pravoj veličini, ravan kao prava, prava kao tačka.</p>
+<ol class="rules">
+  <li><div><b>Nova ravan je uvijek okomita na H ili na F.</b> Ako je okomita na H, osa x₁₃ se crta uz prvu projekciju. Ako je okomita na F, osa x₂₃ se crta uz drugu projekciju.</div></li>
+  <li><div><b>Ordinale idu okomito na novu osu.</b> Iz A′ povlačiš ordinalu okomito na x₁₃ (iz A″ okomito na x₂₃), ne vertikalno.</div></li>
+  <li><div><b>Nanosi se ono što se ne mijenja.</b> Kod x₁₃ se od nove ose nanosi visina z, tj. udaljenost A″ od x₁₂. Kod x₂₃ se nanosi y, tj. udaljenost A′ od x₁₂.</div></li>
+  <li><div><b>Druga transformacija (x₃₄) nanosi udaljenost od prethodne nove ose.</b> Ako je prva bila x₁₃, od x₃₄ nanosiš udaljenost A′ od x₁₃. Ako je prva bila x₂₃, nanosiš udaljenost A″ od x₂₃. Visina z se tada više ne koristi.</div></li>
+  <li><div><b>Znak određuje stranu.</b> Pozitivne vrijednosti idu na stranu nove ose dalje od projekcije iz koje crtaš, a negativne na drugu stranu. Tačka sa z = −5 kod x₁₃ ide 5 cm na „pogrešnu” stranu ose.</div></li>
+  <li><div><b>Osu možeš pomjerati paralelno.</b> Rezultat se ne mijenja, samo se crtež pomjeri. Postavi je tako da se nova projekcija ne preklapa sa starim. Ako zadatak kaže kroz koju tačku ide ravan transformacije (npr. kroz I(8; 0; 0)), osa ide kroz I′.</div></li>
+  <li><div><b>Vraćanje nazad ide obrnutim redom.</b> IV → III: ordinala okomito na x₃₄. III → I: ordinala okomito na x₁₃, a od x₁₃ nanosiš udaljenost tačke IV od x₃₄, na stranu prve projekcije. I → II: vertikalna ordinala, a z je udaljenost tačke III od x₁₃.</div></li>
+</ol>
+<div class="two">
+  <div class="box"><h4>Pravilo za pamćenje</h4><p><b>Prava</b>: osa paralelna sa projekcijom prave.<br><b>Ravan</b>: osa okomita na horizontalu (ili frontalu) te ravni.</p></div>
+  <div class="box"><h4>Strana određuje ugao</h4><p>Ugao sa <b>H</b> se čita sa ose <b>x₁₃</b>, ugao sa <b>F</b> sa ose <b>x₂₃</b>. Ugao se nikad ne mjeri od x₁₂ u novoj projekciji.</p></div>
+</div>
+
+<h2 id="osnovna" class="h2b">Četiri osnovna zadatka</h2>
+<p>Svaki zadatak iz tabele je jedan od ova četiri koraka, ili dva od njih jedan za drugim. Kad ih znaš napamet, kolokvijum se svodi na prepoznavanje.</p>
+<div class="four">
+  <div class="card"><span class="z">Z1 · 1 transformacija</span><h4>Prava u pravoj veličini</h4><p>Nova ravan paralelna sa pravom. Duž i ugao prave sa H (ili F) vide se direktno.</p><p class="rule">x₁₃ ∥ a′ (ili x₂₃ ∥ a″)</p></div>
+  <div class="card"><span class="z">Z2 · 2 transformacije</span><h4>Prava kao tačka</h4><p>Poslije Z1 nova ravan okomita na pravu. Sve ravni kroz tu pravu vide se kao prave.</p><p class="rule">Z1, pa x₃₄ ⊥ a‴</p></div>
+  <div class="card"><span class="z">Z3 · 1 transformacija</span><h4>Ravan kao prava</h4><p>Nova ravan okomita na horizontalu ravni, pa i na cijelu ravan. Cijela ravan pada na jednu pravu.</p><p class="rule">x₁₃ ⊥ h′ (ili x₂₃ ⊥ f″)</p></div>
+  <div class="card"><span class="z">Z4 · 2 transformacije</span><h4>Ravan u pravoj veličini</h4><p>Poslije Z3 nova ravan paralelna sa ravni. Lik se vidi neiskrivljen.</p><p class="rule">Z3, pa x₃₄ ∥ ravni u III</p></div>
+</div>
+<div class="box"><h4>Ako je ravan zadata tragovima</h4><p>Horizontala ravni je paralelna sa prvim tragom, pa umjesto x₁₃ ⊥ h′ crtaš <b>x₁₃ ⊥ T₁</b>. Prvi trag se u trećoj projekciji vidi kao jedna tačka na osi x₁₃. Druga tačka prave T₃ je obično Z‴, dobijena iz O sa visinom odsječka na osi z. Isto važi za F: <b>x₂₃ ⊥ T₂</b>.</p></div>
+<div class="next"><button type="button" class="nextb" data-go="prava">Dalje: Prava →</button></div>
+</section>
+
+<!-- ===================================================== -->
+<section id="prava" class="panel" role="tabpanel" aria-labelledby="t-prava" hidden>
+<p class="sn">Z1 i Z2</p>
+<h2>Prava: prava veličina, ugao, tačka na pravoj</h2>
+<h3>Postupak</h3>
+<ol>
+  <li>Nacrtaj a′ i a″ (prave kroz projekcije dvije tačke).</li>
+  <li>Osa x₁₃ paralelno sa a′, na slobodnom mjestu.</li>
+  <li>Iz svake tačke ordinala okomito na x₁₃, a od ose nanesi z te tačke. Negativan z ide na drugu stranu.</li>
+  <li>a‴ je prava veličina. Ugao a‴ sa x₁₃ je nagibni ugao prema H. Tačka gdje a‴ siječe x₁₃ je prodor kroz H.</li>
+  <li>Za tačku na zadatoj udaljenosti: odmjeri na a‴, pa ordinalom okomito na x₁₃ do a′, i vertikalno do a″.</li>
+</ol>
+
+<figure class="ex" id="ex-d1">
+  <figcaption class="ex-head">
+    <span class="tag">Riješen primjer · vježba 6.2, O₁ b</span>
+    <p class="ex-task">Odrediti pravu veličinu duži AB i nagibni ugao prave a prema horizontalnici. Na pravoj naći tačku T udaljenu 2 cm od A.</p>
+    <p class="ex-data">A(4; 5; 3) · B(−2; 3; −5)</p>
+  </figcaption>
+  <div class="ctrl" role="group" aria-label="Koraci konstrukcije"><button type="button" class="sb" data-k="1">1</button><button type="button" class="sb" data-k="2">2</button><button type="button" class="sb" data-k="3">3</button><button type="button" class="sb" data-k="4">4</button><button type="button" class="sb" data-k="5">5</button><button type="button" class="sb all on" data-k="all">Sve</button></div>
+  <div class="scroll"><svg class="drw" viewBox="-45 -45 121.9 168.53" style="min-width:402px;max-width:610px" role="img" aria-label="Crtež primjera"><defs><pattern id="g-d1" width="10" height="10" patternUnits="userSpaceOnUse" x="0" y="0"><path d="M10,0 V10 H0" class="grid"/></pattern></defs><rect x="-45" y="-45" width="121.9" height="168.53" fill="url(#g-d1)" class="paper"/><line data-s="1" class="el ax" x1="-38" y1="0" x2="62" y2="0"/><line data-s="1" class="el ord" x1="40" y1="50" x2="40" y2="-30"/><line data-s="1" class="el ord" x1="-20" y1="30" x2="-20" y2="50"/><line data-s="1" class="el h line" x1="-29" y1="27" x2="49" y2="53"/><line data-s="1" class="el f line" x1="-26" y1="58" x2="46" y2="-38"/><line data-s="2" class="el newax" x1="-36.44" y1="54.03" x2="38.74" y2="79.09"/><line data-s="3" class="el ord" x1="40" y1="50" x2="31.15" y2="76.56"/><line data-s="3" class="el ord" x1="31.15" y1="76.56" x2="21.66" y2="105.02"/><line data-s="3" class="el ord" x1="-20" y1="30" x2="-28.85" y2="56.56"/><line data-s="3" class="el ord" x1="-28.85" y1="56.56" x2="-13.04" y2="9.13"/><line data-s="4" class="el res line" x1="-21.72" y1="-14.84" x2="25.82" y2="116.53"/><line data-s="5" class="el ord" x1="14.85" y1="86.22" x2="28.23" y2="46.08"/><line data-s="5" class="el ord" x1="28.23" y1="46.08" x2="28.23" y2="-14.31"/><path data-s="4" class="el arc" d="M11.71,77.53 A9,9 0 0 0 17.18,71.91"/><circle data-s="1" class="el pt o" cx="0" cy="0" r="0.85"/><circle data-s="1" class="el pt" cx="40" cy="50" r="0.85"/><circle data-s="1" class="el pt" cx="-20" cy="30" r="0.85"/><circle data-s="1" class="el pt" cx="40" cy="-30" r="0.85"/><circle data-s="1" class="el pt" cx="-20" cy="50" r="0.85"/><circle data-s="3" class="el pt" cx="21.66" cy="105.02" r="0.85"/><circle data-s="3" class="el pt" cx="-13.04" cy="9.13" r="0.85"/><circle data-s="4" class="el pt key" cx="8.65" cy="69.06" r="0.85"/><circle data-s="5" class="el pt key" cx="14.85" cy="86.22" r="0.85"/><circle data-s="5" class="el pt key" cx="28.23" cy="46.08" r="0.85"/><circle data-s="5" class="el pt key" cx="28.23" cy="-14.31" r="0.85"/><text data-s="1" class="el lab" x="63.5" y="-1.5" text-anchor="start">x<tspan class="sub" dy="1.0">12</tspan><tspan dy="-1.0">​</tspan></text><text data-s="1" class="el lab" x="-1.2" y="-1.6" text-anchor="end">O</text><text data-s="1" class="el lab" x="18.15" y="40.75" text-anchor="middle">a′</text><text data-s="1" class="el lab" x="-4.4" y="25.4" text-anchor="middle">a″</text><text data-s="1" class="el lab" x="41.4" y="54" text-anchor="start">A′</text><text data-s="1" class="el lab" x="-21.5" y="28.2" text-anchor="end">B′</text><text data-s="1" class="el lab" x="41.6" y="-31.6" text-anchor="start">A″</text><text data-s="1" class="el lab" x="-18.4" y="54" text-anchor="start">B″</text><text data-s="2" class="el lab" x="40.24" y="83.09" text-anchor="start">x<tspan class="sub" dy="1.0">13</tspan><tspan dy="-1.0">​</tspan></text><text data-s="3" class="el lab dim" x="27.9" y="91.79" text-anchor="start">3</text><text data-s="3" class="el lab dim" x="-22.45" y="33.85" text-anchor="end">5</text><text data-s="3" class="el lab" x="23.26" y="108.52" text-anchor="start">A‴</text><text data-s="3" class="el lab" x="-11.44" y="7.53" text-anchor="start">B‴</text><text data-s="4" class="el lab" x="17.66" y="110.02" text-anchor="end">a‴</text><text data-s="4" class="el lab" x="10.85" y="72.66" text-anchor="start">P<tspan class="sub" dy="1.0">1‴</tspan><tspan dy="-1.0">​</tspan></text><text data-s="4" class="el lab ang" x="17.6" y="78.99" text-anchor="middle">α</text><text data-s="5" class="el lab" x="16.45" y="84.62" text-anchor="start">T‴</text><text data-s="5" class="el lab" x="29.83" y="50.08" text-anchor="start">T′</text><text data-s="5" class="el lab" x="29.83" y="-15.91" text-anchor="start">T″</text><text data-s="5" class="el lab dim" x="20.46" y="95.62" text-anchor="start">2 cm</text></svg></div>
+  <ol class="steps"><li data-k="1"><b>Projekcije prave.</b> Nacrtaj A′, B′ (ispod ose, y) i A″, B″ (iznad ose, z). B ima z = −5, pa je B″ 5 cm ispod ose x₁₂. a′ = A′B′, a″ = A″B″.</li><li data-k="2"><b>Nova osa x₁₃ ∥ a′.</b> Nova ravan P₃ je okomita na H i paralelna sa pravom a. Zato se osa x₁₃ crta paralelno sa a′, bilo gdje, samo da se nova projekcija ne preklapa sa postojećim tačkama.</li><li data-k="3"><b>Ordinale i visine z.</b> Iz A′ i B′ povuci ordinale okomito na x₁₃. Od x₁₃ nanesi visine iz druge projekcije: za A je z = 3 cm, na stranu dalje od a′. Za B je z = −5 cm, pa ide 5 cm na drugu stranu ose.</li><li data-k="4"><b>Prava veličina i ugao α.</b> a‴ = A‴B‴ je prava veličina duži AB. Ugao između a‴ i ose x₁₃ je nagibni ugao prave prema H. Gdje a‴ siječe x₁₃, tu je prodor prave kroz H.</li><li data-k="5"><b>Tačka T, 2 cm od A.</b> Na a‴ odmjeri 2 cm od A‴ i dobiješ T‴. Ordinala okomito na x₁₃ vraća T′ na a′, a vertikalna ordinala T″ na a″. Ovako se nanosi bilo koja dužina na pravu.</li></ol>
+  <dl class="results"><div class="rr"><dt>|AB|</dt><dd>10,20 cm (na vježbi 10,20 cm)</dd></div><div class="rr"><dt>Ugao sa H</dt><dd>α = 51,7° (na vježbi 51,7°)</dd></div><div class="rr"><dt>Tačka T</dt><dd>T(2,82; 4,61; 1,43)</dd></div></dl>
+  <p class="note">Ugao sa F bi se dobio isto, ali iz druge projekcije: x₂₃ ∥ a″ i nanosi se y. Za ovu pravu je β = 11,3°.</p>
+</figure>
+<h3>Varijante sa K1</h3>
+<ul>
+  <li><b>Ugao prave sa F:</b> isto, ali iz druge projekcije: x₂₃ ∥ a″, ordinale iz A″ i B″ okomito na x₂₃, nanosi se y. Ugao a‴ sa x₂₃ je ugao sa F.</li>
+  <li><b>Dio prave u nekom oktantu:</b> prenesi prodore (npr. P₂ i P₃) u treću projekciju kao obične tačke prave. Duž P₂‴P₃‴ je prava veličina tog dijela (vježba 2.2, e).</li>
+  <li><b>Ravan kojoj je a prva nagibnica, i njen ugao sa H:</b> prvi trag je okomit na a′ i prolazi kroz P₁′. Ugao ravni sa H jednak je uglu prave a sa H, pa je to isti crtež kao gore: x₁₃ ∥ a′ je istovremeno okomita na T₁, a ravan se u trećoj projekciji vidi kao a‴. Za drugu nagibnicu: T₂ ⊥ a″, osa x₂₃ ∥ a″.</li>
+</ul>
+<h3>Prava kao tačka (Z2)</h3>
+<p>Poslije prve transformacije, kad je a‴ u pravoj veličini, postavi x₃₄ okomito na a‴. Ordinale iz A‴ i B‴ idu okomito na x₃₄, a nanose se udaljenosti A′ i B′ od ose x₁₃. Obje tačke padnu u istu tačku: prava je tačka. Ovo treba za udaljenost tačke od prave i za ugao dvije ravni u opštem slučaju.</p>
+
+<figure class="ex" id="ex-d2">
+  <figcaption class="ex-head">
+    <span class="tag">Riješen primjer · dodatni primjer</span>
+    <p class="ex-task">Odrediti udaljenost tačke M od prave a = AB.</p>
+    <p class="ex-data">A(1; 2; 1) · B(6; 3; 4) · M(2; 5; 5)</p>
+  </figcaption>
+  <div class="ctrl" role="group" aria-label="Koraci konstrukcije"><button type="button" class="sb" data-k="1">1</button><button type="button" class="sb" data-k="2">2</button><button type="button" class="sb" data-k="3">3</button><button type="button" class="sb" data-k="4">4</button><button type="button" class="sb all on" data-k="all">Sve</button></div>
+  <div class="scroll"><svg class="drw" viewBox="-15 -62.2 108.87 223.16" style="min-width:359px;max-width:544px" role="img" aria-label="Crtež primjera"><defs><pattern id="g-d2" width="10" height="10" patternUnits="userSpaceOnUse" x="0" y="0"><path d="M10,0 V10 H0" class="grid"/></pattern></defs><rect x="-15" y="-62.2" width="108.87" height="223.16" fill="url(#g-d2)" class="paper"/><line data-s="1" class="el ax" x1="-8" y1="0" x2="72" y2="0"/><line data-s="1" class="el ord" x1="10" y1="20" x2="10" y2="-10"/><line data-s="1" class="el ord" x1="60" y1="30" x2="60" y2="-40"/><line data-s="1" class="el ord" x1="20" y1="50" x2="20" y2="-50"/><line data-s="1" class="el h line" x1="2.5" y1="18.5" x2="67.5" y2="31.5"/><line data-s="1" class="el f line" x1="2.5" y1="-5.5" x2="67.5" y2="-44.5"/><line data-s="2" class="el newax" x1="-5.97" y1="59.08" x2="59.71" y2="72.22"/><line data-s="2" class="el ord" x1="10" y1="20" x2="-0.09" y2="70.46"/><line data-s="2" class="el ord" x1="60" y1="30" x2="44.03" y2="109.87"/><line data-s="2" class="el ord" x1="20" y1="50" x2="7.45" y2="112.76"/><line data-s="2" class="el res line" x1="-6.71" y1="64.54" x2="49.32" y2="114.6"/><line data-s="3" class="el newax" x1="61.29" y1="114.57" x2="32.96" y2="146.28"/><line data-s="3" class="el ord" x1="-0.09" y1="70.46" x2="86.87" y2="148.16"/><line data-s="3" class="el ord" x1="44.03" y1="109.87" x2="86.87" y2="148.16"/><line data-s="3" class="el ord" x1="7.45" y1="112.76" x2="48.73" y2="149.64"/><line data-s="4" class="el res line thick" x1="48.73" y1="149.64" x2="86.87" y2="148.16"/><circle data-s="1" class="el pt o" cx="0" cy="0" r="0.85"/><circle data-s="1" class="el pt" cx="10" cy="20" r="0.85"/><circle data-s="1" class="el pt" cx="10" cy="-10" r="0.85"/><circle data-s="1" class="el pt" cx="60" cy="30" r="0.85"/><circle data-s="1" class="el pt" cx="60" cy="-40" r="0.85"/><circle data-s="1" class="el pt" cx="20" cy="50" r="0.85"/><circle data-s="1" class="el pt" cx="20" cy="-50" r="0.85"/><circle data-s="2" class="el pt" cx="-0.09" cy="70.46" r="0.85"/><circle data-s="2" class="el pt" cx="44.03" cy="109.87" r="0.85"/><circle data-s="2" class="el pt" cx="7.45" cy="112.76" r="0.85"/><circle data-s="3" class="el pt key" cx="86.87" cy="148.16" r="0.85"/><circle data-s="3" class="el pt" cx="48.73" cy="149.64" r="0.85"/><text data-s="1" class="el lab" x="73.5" y="-1.5" text-anchor="start">x<tspan class="sub" dy="1.0">12</tspan><tspan dy="-1.0">​</tspan></text><text data-s="1" class="el lab" x="-1.2" y="-1.6" text-anchor="end">O</text><text data-s="1" class="el lab" x="34.41" y="29.14" text-anchor="middle">a′</text><text data-s="1" class="el lab" x="33.46" y="-26.37" text-anchor="middle">a″</text><text data-s="1" class="el lab" x="11.5" y="24" text-anchor="start">A′</text><text data-s="1" class="el lab" x="11.5" y="-11.6" text-anchor="start">A″</text><text data-s="1" class="el lab" x="61.5" y="34" text-anchor="start">B′</text><text data-s="1" class="el lab" x="61.5" y="-41.6" text-anchor="start">B″</text><text data-s="1" class="el lab" x="21.5" y="54" text-anchor="start">M′</text><text data-s="1" class="el lab" x="21.5" y="-51.6" text-anchor="start">M″</text><text data-s="2" class="el lab" x="61.21" y="76.22" text-anchor="start">x<tspan class="sub" dy="1.0">13</tspan><tspan dy="-1.0">​</tspan></text><text data-s="2" class="el lab" x="1.51" y="74.26" text-anchor="start">A‴</text><text data-s="2" class="el lab" x="45.63" y="113.67" text-anchor="start">B‴</text><text data-s="2" class="el lab" x="9.05" y="116.56" text-anchor="start">M‴</text><text data-s="2" class="el lab" x="19.97" y="93.6" text-anchor="middle">a‴</text><text data-s="3" class="el lab" x="34.46" y="149.78" text-anchor="start">x<tspan class="sub" dy="1.0">34</tspan><tspan dy="-1.0">​</tspan></text><text data-s="3" class="el lab" x="85.07" y="152.76" text-anchor="end">a<tspan class="sup" dy="-1.5">IV</tspan><tspan dy="1.5">​</tspan>≡ A<tspan class="sup" dy="-1.5">IV</tspan><tspan dy="1.5">​</tspan>≡ B<tspan class="sup" dy="-1.5">IV</tspan><tspan dy="1.5">​</tspan></text><text data-s="3" class="el lab" x="50.53" y="147.84" text-anchor="start">M<tspan class="sup" dy="-1.5">IV</tspan><tspan dy="1.5">​</tspan></text><text data-s="4" class="el lab ang" x="69.8" y="148.9" text-anchor="start">d</text></svg></div>
+  <ol class="steps"><li data-k="1"><b>Projekcije.</b> Prava a = AB i tačka M u prvoj i drugoj projekciji.</li><li data-k="2"><b>1. transformacija: x₁₃ ∥ a′.</b> Kao kod prave veličine: x₁₃ ∥ a′, ordinale okomito na x₁₃, nanose se visine z. a‴ je u pravoj veličini. Isto se prenese i tačka M.</li><li data-k="3"><b>2. transformacija: x₃₄ ⊥ a‴.</b> Nova osa x₃₄ je okomita na a‴. Iz A‴, B‴ i M‴ ordinale idu okomito na x₃₄. Nanosi se udaljenost prve projekcije od ose x₁₃ (A′, B′ i M′ od x₁₃), ne visina z.</li><li data-k="4"><b>Prava je tačka, udaljenost.</b> A<sup>IV</sup> i B<sup>IV</sup> padaju u istu tačku, pa je prava a u četvrtoj projekciji tačka. Udaljenost tačke M od prave a je duž M<sup>IV</sup> a<sup>IV</sup> u pravoj veličini.</li></ol>
+  <dl class="results"><div class="rr"><dt>Udaljenost</dt><dd>d = 3,82 cm</dd></div></dl>
+  <p class="note">Ovog zadatka nije bilo na vježbama. Ovdje je jer je „prava kao tačka” korak koji treba za ugao dvije ravni u opštem slučaju.</p>
+</figure>
+<div class="next"><button type="button" class="nextb" data-go="ravan">Dalje: Ravan i trougao →</button></div>
+</section>
+
+<!-- ===================================================== -->
+<section id="ravan" class="panel" role="tabpanel" aria-labelledby="t-ravan" hidden>
+<p class="sn">Z3 i Z4</p>
+<h2>Ravan i trougao: ugao sa H i F, prava veličina, kružnica</h2>
+<h3>Postupak za ravan zadatu trouglom</h3>
+<ol>
+  <li>Nađi horizontalu trougla: kroz vrh (npr. A) povuci h″ ∥ x₁₂ do suprotne stranice, ordinalom prenesi tačku na prvu projekciju, h′ = A′1′. Za F: frontala, f′ ∥ x₁₂, pa f″.</li>
+  <li>Osa x₁₃ ⊥ h′ (ili x₂₃ ⊥ f″).</li>
+  <li>Prenesi sva tri vrha. Moraju pasti na jednu pravu. Ako ne padaju, greška je u horizontali ili u nanošenju.</li>
+  <li>Ugao te prave sa x₁₃ je ugao ravni sa H (sa x₂₃ ugao sa F).</li>
+  <li>Za pravu veličinu: x₃₄ paralelno sa tom pravom, ordinale okomito na x₃₄, nanose se udaljenosti prvih projekcija od x₁₃ (drugih od x₂₃).</li>
+</ol>
+
+<figure class="ex" id="ex-d3">
+  <figcaption class="ex-head">
+    <span class="tag">Riješen primjer · vježba 6.2, O₂ b–c</span>
+    <p class="ex-task">Odrediti ugao koji ravan trougla ABC zaklapa sa frontalnicom i pravu veličinu trougla, koristeći transformaciju.</p>
+    <p class="ex-data">A(−2; 3; 1) · B(6; 1; 3) · C(2; 7; 9)</p>
+  </figcaption>
+  <div class="ctrl" role="group" aria-label="Koraci konstrukcije"><button type="button" class="sb" data-k="1">1</button><button type="button" class="sb" data-k="2">2</button><button type="button" class="sb" data-k="3">3</button><button type="button" class="sb" data-k="4">4</button><button type="button" class="sb" data-k="5">5</button><button type="button" class="sb all on" data-k="all">Sve</button></div>
+  <div class="scroll"><svg class="drw" viewBox="-39 -152.07 239.53 234.27" style="min-width:790px;max-width:1198px" role="img" aria-label="Crtež primjera"><defs><pattern id="g-d3" width="10" height="10" patternUnits="userSpaceOnUse" x="0" y="0"><path d="M10,0 V10 H0" class="grid"/></pattern></defs><rect x="-39" y="-152.07" width="239.53" height="234.27" fill="url(#g-d3)" class="paper"/><polygon data-s="1" class="el tri t1" points="-20,30 60,10 20,70"/><polygon data-s="1" class="el tri t1" points="-20,-10 60,-30 20,-90"/><polygon data-s="5" class="el tri tv" points="185.33,-56.4 102.58,-37.63 120.36,-129.74"/><line data-s="1" class="el ax" x1="-32" y1="0" x2="75" y2="0"/><line data-s="1" class="el ord" x1="-20" y1="30" x2="-20" y2="-10"/><line data-s="1" class="el ord" x1="60" y1="10" x2="60" y2="-30"/><line data-s="1" class="el ord" x1="20" y1="70" x2="20" y2="-90"/><line data-s="2" class="el fr line" x1="-20" y1="30" x2="46.67" y2="30"/><line data-s="2" class="el fr line" x1="-20" y1="-10" x2="46.67" y2="-50"/><line data-s="2" class="el ord" x1="46.67" y1="30" x2="46.67" y2="-50"/><line data-s="3" class="el newax" x1="29.12" y1="-104.8" x2="74.41" y2="-29.31"/><line data-s="4" class="el ord" x1="-20" y1="-10" x2="83.66" y2="-72.2"/><line data-s="4" class="el ord" x1="60" y1="-30" x2="78.86" y2="-41.32"/><line data-s="4" class="el ord" x1="20" y1="-90" x2="93.26" y2="-133.95"/><line data-s="4" class="el res line" x1="76.47" y1="-25.88" x2="94.98" y2="-145.07"/><line data-s="4" class="el newax" x1="73.38" y1="-31.02" x2="79.55" y2="-20.73"/><line data-s="5" class="el newax" x1="106.34" y1="-140.02" x2="89.49" y2="-31.57"/><line data-s="5" class="el ord" x1="83.66" y1="-72.2" x2="185.33" y2="-56.4"/><line data-s="5" class="el ord" x1="78.86" y1="-41.32" x2="102.58" y2="-37.63"/><line data-s="5" class="el ord" x1="93.26" y1="-133.95" x2="120.36" y2="-129.74"/><path data-s="4" class="el arc" d="M78,-35.76 A10,10 0 0 0 71.32,-34.45"/><circle data-s="1" class="el pt o" cx="0" cy="0" r="0.85"/><circle data-s="1" class="el pt" cx="-20" cy="30" r="0.85"/><circle data-s="1" class="el pt" cx="-20" cy="-10" r="0.85"/><circle data-s="1" class="el pt" cx="60" cy="10" r="0.85"/><circle data-s="1" class="el pt" cx="60" cy="-30" r="0.85"/><circle data-s="1" class="el pt" cx="20" cy="70" r="0.85"/><circle data-s="1" class="el pt" cx="20" cy="-90" r="0.85"/><circle data-s="2" class="el pt" cx="46.67" cy="30" r="0.85"/><circle data-s="2" class="el pt" cx="46.67" cy="-50" r="0.85"/><circle data-s="4" class="el pt" cx="83.66" cy="-72.2" r="0.85"/><circle data-s="4" class="el pt" cx="78.86" cy="-41.32" r="0.85"/><circle data-s="4" class="el pt" cx="93.26" cy="-133.95" r="0.85"/><circle data-s="4" class="el pt key" cx="76.47" cy="-25.88" r="0.85"/><circle data-s="5" class="el pt" cx="185.33" cy="-56.4" r="0.85"/><circle data-s="5" class="el pt" cx="102.58" cy="-37.63" r="0.85"/><circle data-s="5" class="el pt" cx="120.36" cy="-129.74" r="0.85"/><text data-s="1" class="el lab" x="76.5" y="-1.5" text-anchor="start">x<tspan class="sub" dy="1.0">12</tspan><tspan dy="-1.0">​</tspan></text><text data-s="1" class="el lab" x="-1.2" y="-1.6" text-anchor="end">O</text><text data-s="1" class="el lab" x="-22" y="34" text-anchor="end">A′</text><text data-s="1" class="el lab" x="-22" y="-6" text-anchor="end">A″</text><text data-s="1" class="el lab" x="61.6" y="8.6" text-anchor="start">B′</text><text data-s="1" class="el lab" x="61.6" y="-26.5" text-anchor="start">B″</text><text data-s="1" class="el lab" x="21.6" y="74" text-anchor="start">C′</text><text data-s="1" class="el lab" x="18.4" y="-91.6" text-anchor="end">C″</text><text data-s="2" class="el lab" x="48.07" y="34" text-anchor="start">1′</text><text data-s="2" class="el lab" x="48.27" y="-51.2" text-anchor="start">1″</text><text data-s="2" class="el lab" x="3.33" y="28.6" text-anchor="middle">f′</text><text data-s="2" class="el lab" x="2.33" y="-26.2" text-anchor="middle">f″</text><text data-s="3" class="el lab" x="66.41" y="-30.31" text-anchor="end">x<tspan class="sub" dy="1.0">23</tspan><tspan dy="-1.0">​</tspan></text><text data-s="4" class="el lab" x="82.06" y="-68.6" text-anchor="end">A‴</text><text data-s="4" class="el lab" x="80.46" y="-37.52" text-anchor="start">B‴</text><text data-s="4" class="el lab" x="94.86" y="-130.15" text-anchor="start">C‴</text><text data-s="4" class="el lab ang" x="73.88" y="-37.93" text-anchor="middle">β</text><text data-s="5" class="el lab" x="90.99" y="-28.07" text-anchor="start">x<tspan class="sub" dy="1.0">34</tspan><tspan dy="-1.0">​</tspan></text><text data-s="5" class="el lab" x="187.13" y="-58.2" text-anchor="start">A<tspan class="sup" dy="-1.5">IV</tspan><tspan dy="1.5">​</tspan></text><text data-s="5" class="el lab" x="104.38" y="-39.43" text-anchor="start">B<tspan class="sup" dy="-1.5">IV</tspan><tspan dy="1.5">​</tspan></text><text data-s="5" class="el lab" x="122.16" y="-131.54" text-anchor="start">C<tspan class="sup" dy="-1.5">IV</tspan><tspan dy="1.5">​</tspan></text></svg></div>
+  <ol class="steps"><li data-k="1"><b>Trougao ABC.</b> Projekcije A′B′C′ i A″B″C″.</li><li data-k="2"><b>Frontala f kroz A.</b> Frontala je prava ravni paralelna sa F: f′ ∥ x₁₂ kroz A′ (y = 3) siječe B′C′ u 1′. Ordinala daje 1″ na B″C″, pa je f″ = A″1″. Frontala je u drugoj projekciji u pravoj veličini.</li><li data-k="3"><b>Osa x₂₃ ⊥ f″.</b> Nova ravan P₃ je okomita na F i na ravan trougla. Zato je osa x₂₃ okomita na f″ i crta se uz drugu projekciju.</li><li data-k="4"><b>Ravan kao prava, ugao β.</b> Ordinale iz A″, B″, C″ idu okomito na x₂₃. Od ose se nanosi y (udaljenost A′, B′, C′ od x₁₂). A‴, B‴, C‴ padaju na jednu pravu, to je provjera. Ugao te prave sa x₂₃ je ugao ravni sa F.</li><li data-k="5"><b>x₃₄ ∥ trouglu, prava veličina.</b> Osa x₃₄ se crta paralelno sa pravom A‴B‴C‴. Ordinale okomito na x₃₄, a nanose se udaljenosti A″, B″, C″ od ose x₂₃. A<sup>IV</sup> B<sup>IV</sup> C<sup>IV</sup> je prava veličina trougla.</li></ol>
+  <dl class="results"><div class="rr"><dt>Ugao sa F</dt><dd>β = 39,8° (na vježbi 39,8°)</dd></div><div class="rr"><dt>Stranice</dt><dd>|AB| = 8,49, |BC| = 9,38, |CA| = 9,80 cm</dd></div><div class="rr"><dt>Površina</dt><dd>≈ 36,44 cm²</dd></div></dl>
+  
+</figure>
+<h3>Prava veličina i upisana kružnica (iz prve projekcije)</h3>
+<p>Isti postupak, ali sa horizontalom i osom x₁₃. Ovaj trougao je iz vježbe 6.1, a na K1 se uz pravu veličinu traži i centar upisane ili opisane kružnice.</p>
+
+<figure class="ex" id="ex-d5">
+  <figcaption class="ex-head">
+    <span class="tag">Riješen primjer · vježba 6.1, O₁ i tip zadatka sa K1</span>
+    <p class="ex-task">Odrediti pravu veličinu trougla ABC, centar i poluprečnik upisane kružnice, i vratiti centar u projekcije.</p>
+    <p class="ex-data">A(0; 0; 2) · B(3; 5; 5) · C(5; 2; 0) · osa x₁₃ kroz I(8; 0; 0)</p>
+  </figcaption>
+  <div class="ctrl" role="group" aria-label="Koraci konstrukcije"><button type="button" class="sb" data-k="1">1</button><button type="button" class="sb" data-k="2">2</button><button type="button" class="sb" data-k="3">3</button><button type="button" class="sb" data-k="4">4</button><button type="button" class="sb" data-k="5">5</button><button type="button" class="sb" data-k="6">6</button><button type="button" class="sb" data-k="7">7</button><button type="button" class="sb all on" data-k="all">Sve</button></div>
+  <div class="scroll"><svg class="drw" viewBox="-17.2 -62.2 169.36 164.68" style="min-width:559px;max-width:847px" role="img" aria-label="Crtež primjera"><defs><pattern id="g-d5" width="10" height="10" patternUnits="userSpaceOnUse" x="0" y="0"><path d="M10,0 V10 H0" class="grid"/></pattern></defs><rect x="-17.2" y="-62.2" width="169.36" height="164.68" fill="url(#g-d5)" class="paper"/><polygon data-s="1" class="el tri t1" points="0,0 30,50 50,20"/><polygon data-s="1" class="el tri t1" points="0,-20 30,-50 50,0"/><polygon data-s="5" class="el tri tv" points="136.96,29.21 95.93,80.36 80.14,20.78"/><line data-s="1" class="el ax" x1="-10" y1="0" x2="92" y2="0"/><line data-s="1" class="el ord" x1="0" y1="0" x2="0" y2="-20"/><line data-s="1" class="el ord" x1="30" y1="50" x2="30" y2="-50"/><line data-s="1" class="el ord" x1="50" y1="20" x2="50" y2="0"/><line data-s="2" class="el hz line" x1="0" y1="-20" x2="42" y2="-20"/><line data-s="2" class="el hz line" x1="0" y1="0" x2="42" y2="32"/><line data-s="2" class="el ord" x1="42" y1="32" x2="42" y2="-20"/><line data-s="2" class="el newax" x1="84.85" y1="-6.36" x2="32.68" y2="62.1"/><line data-s="3" class="el ord" x1="0" y1="0" x2="66.53" y2="50.69"/><line data-s="3" class="el ord" x1="30" y1="50" x2="77.3" y2="86.04"/><line data-s="3" class="el ord" x1="50" y1="20" x2="59.34" y2="27.12"/><line data-s="3" class="el res line" x1="56.65" y1="18.28" x2="80" y2="94.88"/><line data-s="4" class="el newax" x1="66.57" y1="16.55" x2="89.2" y2="90.78"/><line data-s="4" class="el ord" x1="66.53" y1="50.69" x2="136.96" y2="29.21"/><line data-s="4" class="el ord" x1="77.3" y1="86.04" x2="95.93" y2="80.36"/><line data-s="4" class="el ord" x1="59.34" y1="27.12" x2="80.14" y2="20.78"/><line data-s="6" class="el bis line" x1="136.96" y1="29.21" x2="104.02" y2="42.13"/><line data-s="6" class="el bis line" x1="95.93" y1="80.36" x2="104.02" y2="42.13"/><circle data-s="6" class="el circ" cx="104.02" cy="42.13" r="17.61"/><line data-s="7" class="el ord" x1="104.02" y1="42.13" x2="67.33" y2="53.31"/><line data-s="7" class="el ord" x1="67.33" y1="53.31" x2="27.09" y2="22.66"/><line data-s="7" class="el ord" x1="27.09" y1="22.66" x2="27.09" y2="-22.23"/><circle data-s="1" class="el pt o" cx="0" cy="0" r="0.85"/><circle data-s="1" class="el pt" cx="0" cy="0" r="0.85"/><circle data-s="1" class="el pt" cx="0" cy="-20" r="0.85"/><circle data-s="1" class="el pt" cx="30" cy="50" r="0.85"/><circle data-s="1" class="el pt" cx="30" cy="-50" r="0.85"/><circle data-s="1" class="el pt" cx="50" cy="20" r="0.85"/><circle data-s="1" class="el pt" cx="50" cy="0" r="0.85"/><circle data-s="1" class="el pt" cx="80" cy="0" r="0.85"/><circle data-s="2" class="el pt" cx="42" cy="32" r="0.85"/><circle data-s="2" class="el pt" cx="42" cy="-20" r="0.85"/><circle data-s="3" class="el pt" cx="66.53" cy="50.69" r="0.85"/><circle data-s="3" class="el pt" cx="77.3" cy="86.04" r="0.85"/><circle data-s="3" class="el pt" cx="59.34" cy="27.12" r="0.85"/><circle data-s="5" class="el pt" cx="136.96" cy="29.21" r="0.85"/><circle data-s="5" class="el pt" cx="95.93" cy="80.36" r="0.85"/><circle data-s="5" class="el pt" cx="80.14" cy="20.78" r="0.85"/><circle data-s="6" class="el pt key" cx="104.02" cy="42.13" r="0.85"/><circle data-s="7" class="el pt key" cx="67.33" cy="53.31" r="0.85"/><circle data-s="7" class="el pt key" cx="27.09" cy="22.66" r="0.85"/><circle data-s="7" class="el pt key" cx="27.09" cy="-22.23" r="0.85"/><text data-s="1" class="el lab" x="93.5" y="-1.5" text-anchor="start">x<tspan class="sub" dy="1.0">12</tspan><tspan dy="-1.0">​</tspan></text><text data-s="1" class="el lab" x="-2" y="4.2" text-anchor="end">A′ ≡ O</text><text data-s="1" class="el lab" x="-2" y="-21.4" text-anchor="end">A″</text><text data-s="1" class="el lab" x="28.4" y="54" text-anchor="end">B′</text><text data-s="1" class="el lab" x="28.4" y="-51.6" text-anchor="end">B″</text><text data-s="1" class="el lab" x="51.6" y="18.8" text-anchor="start">C′</text><text data-s="1" class="el lab" x="51.6" y="-1.6" text-anchor="start">C″</text><text data-s="1" class="el lab" x="81.6" y="-1.8" text-anchor="start">I′ ≡ I″</text><text data-s="2" class="el lab" x="43.6" y="35.6" text-anchor="start">1′</text><text data-s="2" class="el lab" x="43.6" y="-21.4" text-anchor="start">1″</text><text data-s="2" class="el lab" x="17.5" y="17" text-anchor="end">h′</text><text data-s="2" class="el lab" x="9.24" y="-21.4" text-anchor="middle">h″</text><text data-s="2" class="el lab" x="25.68" y="64.1" text-anchor="end">x<tspan class="sub" dy="1.0">13</tspan><tspan dy="-1.0">​</tspan></text><text data-s="3" class="el lab" x="68.33" y="54.49" text-anchor="start">A‴</text><text data-s="3" class="el lab" x="78.9" y="84.64" text-anchor="start">B‴</text><text data-s="3" class="el lab" x="61.54" y="28.72" text-anchor="start">C‴</text><text data-s="4" class="el lab" x="90.7" y="94.28" text-anchor="start">x<tspan class="sub" dy="1.0">34</tspan><tspan dy="-1.0">​</tspan></text><text data-s="5" class="el lab" x="138.76" y="27.41" text-anchor="start">A<tspan class="sup" dy="-1.5">IV</tspan><tspan dy="1.5">​</tspan></text><text data-s="5" class="el lab" x="97.73" y="78.56" text-anchor="start">B<tspan class="sup" dy="-1.5">IV</tspan><tspan dy="1.5">​</tspan></text><text data-s="5" class="el lab" x="81.94" y="18.98" text-anchor="start">C<tspan class="sup" dy="-1.5">IV</tspan><tspan dy="1.5">​</tspan></text><text data-s="6" class="el lab" x="105.82" y="40.33" text-anchor="start">U<tspan class="sup" dy="-1.5">IV</tspan><tspan dy="1.5">​</tspan></text><text data-s="7" class="el lab" x="65.13" y="52.11" text-anchor="end">U‴</text><text data-s="7" class="el lab" x="28.69" y="26.46" text-anchor="start">U′</text><text data-s="7" class="el lab" x="28.69" y="-23.83" text-anchor="start">U″</text></svg></div>
+  <ol class="steps"><li data-k="1"><b>Zadato.</b> Projekcije trougla ABC iz vježbe 6.1, O₁.</li><li data-k="2"><b>Horizontala i x₁₃ ⊥ h′.</b> Isto kao kod udaljenosti: h′ = A′1′, pa x₁₃ ⊥ h′ kroz I′.</li><li data-k="3"><b>Treća projekcija.</b> Ordinale okomito na x₁₃, nanose se visine z. Trougao je u trećoj projekciji duž A‴B‴C‴.</li><li data-k="4"><b>x₃₄ ∥ A‴B‴C‴.</b> Druga transformacija: x₃₄ paralelno sa pravom trougla. Ordinale iz A‴, B‴, C‴ okomito na x₃₄, a nanose se udaljenosti A′, B′, C′ od ose x₁₃.</li><li data-k="5"><b>Prava veličina.</b> A<sup>IV</sup> B<sup>IV</sup> C<sup>IV</sup> je prava veličina trougla. Ovdje se mjere stranice, uglovi i površina.</li><li data-k="6"><b>Upisana kružnica.</b> Centar upisane kružnice U<sup>IV</sup> je presjek simetrala uglova (dovoljne su dvije). Poluprečnik r je udaljenost U<sup>IV</sup> od bilo koje stranice. Za opisanu kružnicu koriste se simetrale stranica.</li><li data-k="7"><b>Centar nazad u projekcije.</b> Obrnutim redom: ordinala iz U<sup>IV</sup> okomito na x₃₄ daje U‴ na pravoj trougla. Iz U‴ ordinala okomito na x₁₃, a od x₁₃ se nanese udaljenost U<sup>IV</sup> od x₃₄: to je U′. U″ je na vertikalnoj ordinali, na visini koju U‴ ima od x₁₃.</li></ol>
+  <dl class="results"><div class="rr"><dt>Stranice</dt><dd>|AB| = 6,56, |BC| = 6,16, |CA| = 5,74 cm (na vježbi 6,56; 6,16; 5,74)</dd></div><div class="rr"><dt>Upisana kružnica</dt><dd>r = 1,76 cm, centar U(2,71; 2,27; 2,22)</dd></div></dl>
+  
+</figure>
+<div class="box"><h4>Opisana kružnica i kružnica u projekcijama</h4>
+<ul>
+  <li><b>Opisana:</b> centar je presjek simetrala stranica (okomica kroz sredine stranica) u pravoj veličini. Poluprečnik je udaljenost centra od bilo kog vrha. Kod tupouglog trougla centar je van trougla.</li>
+  <li><b>Upisana:</b> centar je presjek simetrala uglova, a poluprečnik je udaljenost centra od stranice.</li>
+  <li><b>Kružnica u projekcijama</b> je elipsa. Ako se traži, vrati nazad 8 tačaka kružnice (npr. krajeve dva normalna prečnika i tačke između) istim postupkom kao centar, pa ih spoji. Na tvojim materijalima nije jasno da li se kružnica traži u projekcijama ili samo u pravoj veličini. Provjeri to sa asistentom.</li>
+</ul></div>
+<div class="next"><button type="button" class="nextb" data-go="udaljenosti">Dalje: Udaljenosti →</button></div>
+</section>
+
+<!-- ===================================================== -->
+<section id="udaljenosti" class="panel" role="tabpanel" aria-labelledby="t-udaljenosti" hidden>
+<p class="sn">Z3 primijenjen</p>
+<h2>Udaljenosti</h2>
+<h3>Udaljenost tačke od ravni (ili trougla)</h3>
+<p>Kad se ravan u trećoj projekciji vidi kao prava, normala na ravan je paralelna sa novom ravni projekcije. Zato je okomica iz M‴ na tu pravu odmah u pravoj veličini. Nema obaranja ni trougla razlike visina.</p>
+<ol>
+  <li>Horizontala ravni, osa x₁₃ ⊥ h′, treća projekcija ravni (prava) i tačke M.</li>
+  <li>Okomica iz M‴ na pravu ravni, podnožje N‴. d = M‴N‴.</li>
+  <li>Ako se traži N u projekcijama: M′N′ ∥ x₁₃, N′ je na ordinali iz N‴, a N″ na vertikalnoj ordinali, na visini koju N‴ ima od x₁₃.</li>
+</ol>
+
+<figure class="ex" id="ex-d4">
+  <figcaption class="ex-head">
+    <span class="tag">Riješen primjer · vježba 6.1, O₁</span>
+    <p class="ex-task">Odrediti pravu veličinu najkraćeg rastojanja tačke M od ravni trougla ABC. Ravan transformacije, upravnu na H, postaviti kroz tačku I.</p>
+    <p class="ex-data">M(6; 2; 3) · A(0; 0; 2) · B(3; 5; 5) · C(5; 2; 0) · I(8; 0; 0)</p>
+  </figcaption>
+  <div class="ctrl" role="group" aria-label="Koraci konstrukcije"><button type="button" class="sb" data-k="1">1</button><button type="button" class="sb" data-k="2">2</button><button type="button" class="sb" data-k="3">3</button><button type="button" class="sb" data-k="4">4</button><button type="button" class="sb" data-k="5">5</button><button type="button" class="sb" data-k="6">6</button><button type="button" class="sb all on" data-k="all">Sve</button></div>
+  <div class="scroll"><svg class="drw" viewBox="-17.2 -62.2 124.1 164.08" style="min-width:410px;max-width:620px" role="img" aria-label="Crtež primjera"><defs><pattern id="g-d4" width="10" height="10" patternUnits="userSpaceOnUse" x="0" y="0"><path d="M10,0 V10 H0" class="grid"/></pattern></defs><rect x="-17.2" y="-62.2" width="124.1" height="164.08" fill="url(#g-d4)" class="paper"/><polygon data-s="1" class="el tri t1" points="0,0 30,50 50,20"/><polygon data-s="1" class="el tri t1" points="0,-20 30,-50 50,0"/><line data-s="1" class="el ax" x1="-10" y1="0" x2="92" y2="0"/><line data-s="1" class="el ord" x1="0" y1="0" x2="0" y2="-20"/><line data-s="1" class="el ord" x1="30" y1="50" x2="30" y2="-50"/><line data-s="1" class="el ord" x1="50" y1="20" x2="50" y2="0"/><line data-s="1" class="el ord" x1="60" y1="20" x2="60" y2="-30"/><line data-s="2" class="el hz line" x1="0" y1="-20" x2="42" y2="-20"/><line data-s="2" class="el hz line" x1="0" y1="0" x2="42" y2="32"/><line data-s="2" class="el ord" x1="42" y1="32" x2="42" y2="-20"/><line data-s="3" class="el newax" x1="84.85" y1="-6.36" x2="32.68" y2="62.1"/><line data-s="4" class="el ord" x1="0" y1="0" x2="66.53" y2="50.69"/><line data-s="4" class="el ord" x1="30" y1="50" x2="77.3" y2="86.04"/><line data-s="4" class="el ord" x1="50" y1="20" x2="59.34" y2="27.12"/><line data-s="4" class="el ord" x1="60" y1="20" x2="86.88" y2="40.48"/><line data-s="4" class="el res line" x1="56.65" y1="18.28" x2="80" y2="94.88"/><line data-s="5" class="el nrm line thick" x1="86.88" y1="40.48" x2="65.41" y2="47.02"/><line data-s="6" class="el nrm line" x1="60" y1="20" x2="48.96" y2="34.49"/><line data-s="6" class="el ord" x1="65.41" y1="47.02" x2="48.96" y2="34.49"/><line data-s="6" class="el ord" x1="48.96" y1="34.49" x2="48.96" y2="-16.89"/><line data-s="6" class="el nrm line" x1="60" y1="-30" x2="48.96" y2="-16.89"/><circle data-s="1" class="el pt o" cx="0" cy="0" r="0.85"/><circle data-s="1" class="el pt" cx="0" cy="0" r="0.85"/><circle data-s="1" class="el pt" cx="0" cy="-20" r="0.85"/><circle data-s="1" class="el pt" cx="30" cy="50" r="0.85"/><circle data-s="1" class="el pt" cx="30" cy="-50" r="0.85"/><circle data-s="1" class="el pt" cx="50" cy="20" r="0.85"/><circle data-s="1" class="el pt" cx="50" cy="0" r="0.85"/><circle data-s="1" class="el pt" cx="60" cy="20" r="0.85"/><circle data-s="1" class="el pt" cx="60" cy="-30" r="0.85"/><circle data-s="1" class="el pt" cx="80" cy="0" r="0.85"/><circle data-s="2" class="el pt" cx="42" cy="32" r="0.85"/><circle data-s="2" class="el pt" cx="42" cy="-20" r="0.85"/><circle data-s="4" class="el pt" cx="66.53" cy="50.69" r="0.85"/><circle data-s="4" class="el pt" cx="77.3" cy="86.04" r="0.85"/><circle data-s="4" class="el pt" cx="59.34" cy="27.12" r="0.85"/><circle data-s="4" class="el pt" cx="86.88" cy="40.48" r="0.85"/><circle data-s="5" class="el pt key" cx="65.41" cy="47.02" r="0.85"/><circle data-s="6" class="el pt key" cx="48.96" cy="34.49" r="0.85"/><circle data-s="6" class="el pt key" cx="48.96" cy="-16.89" r="0.85"/><text data-s="1" class="el lab" x="93.5" y="-1.5" text-anchor="start">x<tspan class="sub" dy="1.0">12</tspan><tspan dy="-1.0">​</tspan></text><text data-s="1" class="el lab" x="-2" y="4.2" text-anchor="end">A′ ≡ O</text><text data-s="1" class="el lab" x="-2" y="-21.4" text-anchor="end">A″</text><text data-s="1" class="el lab" x="28.4" y="54" text-anchor="end">B′</text><text data-s="1" class="el lab" x="28.4" y="-51.6" text-anchor="end">B″</text><text data-s="1" class="el lab" x="51.6" y="18.8" text-anchor="start">C′</text><text data-s="1" class="el lab" x="51.6" y="-1.6" text-anchor="start">C″</text><text data-s="1" class="el lab" x="58.4" y="18.6" text-anchor="end">M′</text><text data-s="1" class="el lab" x="61.6" y="-31.6" text-anchor="start">M″</text><text data-s="1" class="el lab" x="81.6" y="-1.8" text-anchor="start">I′ ≡ I″</text><text data-s="2" class="el lab" x="43.6" y="35.6" text-anchor="start">1′</text><text data-s="2" class="el lab" x="43.6" y="-21.4" text-anchor="start">1″</text><text data-s="2" class="el lab" x="17.5" y="17" text-anchor="end">h′</text><text data-s="2" class="el lab" x="9.24" y="-21.4" text-anchor="middle">h″</text><text data-s="3" class="el lab" x="25.68" y="64.1" text-anchor="end">x<tspan class="sub" dy="1.0">13</tspan><tspan dy="-1.0">​</tspan></text><text data-s="4" class="el lab" x="68.33" y="54.49" text-anchor="start">A‴</text><text data-s="4" class="el lab" x="78.9" y="84.64" text-anchor="start">B‴</text><text data-s="4" class="el lab" x="61.54" y="28.72" text-anchor="start">C‴</text><text data-s="4" class="el lab" x="88.48" y="38.88" text-anchor="start">M‴</text><text data-s="5" class="el lab" x="63.41" y="45.42" text-anchor="end">N‴</text><text data-s="5" class="el lab ang" x="78.14" y="43.75" text-anchor="start">d</text><text data-s="6" class="el lab" x="50.16" y="38.69" text-anchor="start">N′</text><text data-s="6" class="el lab" x="50.56" y="-18.49" text-anchor="start">N″</text></svg></div>
+  <ol class="steps"><li data-k="1"><b>Zadato.</b> Projekcije trougla ABC i tačke M. Tačka I(8; 0; 0) je na osi x, kroz nju ide nova osa.</li><li data-k="2"><b>Horizontala h kroz A.</b> h″ ∥ x₁₂ na visini z = 2 siječe B″C″ u 1″. Ordinala daje 1′ na B′C′, pa je h′ = A′1′.</li><li data-k="3"><b>Osa x₁₃ ⊥ h′ kroz I′.</b> Horizontala je paralelna sa H. Ako je nova ravan P₃ okomita na h, okomita je i na cijelu ravan trougla. Zato je x₁₃ ⊥ h′.</li><li data-k="4"><b>Treća projekcija.</b> Ordinale iz A′, B′, C′, M′ okomito na x₁₃, a od ose se nanose visine z (2, 5, 0 i 3 cm). A‴, B‴, C‴ leže na jednoj pravoj: ravan trougla se vidi kao prava.</li><li data-k="5"><b>Normala i udaljenost.</b> Iz M‴ spusti okomicu na pravu A‴B‴C‴: podnožje je N‴. Normala MN je paralelna sa P₃, pa je M‴N‴ prava veličina udaljenosti d.</li><li data-k="6"><b>N′ i N″ nazad.</b> MN ∥ P₃, pa je M′N′ ∥ x₁₃: kroz M′ povuci paralelu sa x₁₃, a ordinala iz N‴ (okomito na x₁₃) daje N′. N″ je na vertikalnoj ordinali iz N′, na visini koju N‴ ima od ose x₁₃.</li></ol>
+  <dl class="results"><div class="rr"><dt>Udaljenost</dt><dd>d = 2,24 cm (na vježbi 2,24 cm)</dd></div><div class="rr"><dt>Podnožje</dt><dd>N(4,9; 3,45; 1,69), van trougla</dd></div><div class="rr"><dt>Usput</dt><dd>ugao ravni ABC sa H = 54,3°, to je ugao prave A‴B‴C‴ sa x₁₃</dd></div></dl>
+  
+</figure>
+<div class="box warn"><h4>Udaljenost od trougla, ne od ravni</h4><p>Ako se traži udaljenost od <b>trougla</b>, provjeri da li je N unutar trougla, u prvoj projekciji ili u pravoj veličini. Na vježbi 5.2 (O₃) N je bio unutar trougla, pa je to ista udaljenost kao od ravni. Ovdje je N van trougla, ali zadatak traži udaljenost od <b>ravni</b> trougla. Šta raditi kad je N van trougla, a traži se udaljenost od trougla, nije bilo na vježbama.</p></div>
+
+<h3>Tačke na normali na zadatoj udaljenosti</h3>
+<p>Isto kao gore: u trećoj projekciji je normala okomita na pravu ravni i u pravoj veličini, pa se 5 cm nanosi direktno.</p>
+
+<figure class="ex" id="ex-d6">
+  <figcaption class="ex-head">
+    <span class="tag">Riješen primjer · vježba 4.2, O₆</span>
+    <p class="ex-task">Tačka S(2; 2; ?) leži u ravni R(5; 5; 5). Nacrtati tačke M i N na normali iz S, udaljene od S po 5 cm.</p>
+    <p class="ex-data">S(2; 2; ?) · R(5; 5; 5) · |SM| = |SN| = 5 cm</p>
+  </figcaption>
+  <div class="ctrl" role="group" aria-label="Koraci konstrukcije"><button type="button" class="sb" data-k="1">1</button><button type="button" class="sb" data-k="2">2</button><button type="button" class="sb" data-k="3">3</button><button type="button" class="sb" data-k="4">4</button><button type="button" class="sb" data-k="5">5</button><button type="button" class="sb all on" data-k="all">Sve</button></div>
+  <div class="scroll"><svg class="drw" viewBox="-85.7 -69.5 162.6 186.34" style="min-width:537px;max-width:813px" role="img" aria-label="Crtež primjera"><defs><pattern id="g-d6" width="10" height="10" patternUnits="userSpaceOnUse" x="0" y="0"><path d="M10,0 V10 H0" class="grid"/></pattern></defs><rect x="-85.7" y="-69.5" width="162.6" height="186.34" fill="url(#g-d6)" class="paper"/><line data-s="1" class="el ax" x1="-72" y1="0" x2="62" y2="0"/><line data-s="1" class="el trH line" x1="55" y1="-5" x2="-27.5" y2="77.5"/><line data-s="1" class="el trF line" x1="55" y1="5" x2="-12.5" y2="-62.5"/><line data-s="1" class="el hz line" x1="20" y1="20" x2="40" y2="0"/><line data-s="1" class="el ord" x1="40" y1="0" x2="40" y2="-10"/><line data-s="1" class="el hz line" x1="40" y1="-10" x2="0" y2="-10"/><line data-s="1" class="el ord" x1="20" y1="20" x2="20" y2="-10"/><line data-s="2" class="el newax" x1="-2.83" y1="64.14" x2="-39.14" y2="27.83"/><line data-s="3" class="el ord" x1="0" y1="50" x2="-8.49" y2="58.49"/><line data-s="3" class="el ord" x1="0" y1="0" x2="-68.84" y2="68.84"/><line data-s="3" class="el ord" x1="20" y1="20" x2="-20.56" y2="60.56"/><line data-s="3" class="el res line" x1="21.08" y1="53.41" x2="-78.7" y2="70.53"/><line data-s="4" class="el nrm line thick" x1="-12.1" y1="109.84" x2="-29.01" y2="11.28"/><line data-s="5" class="el ord" x1="-12.1" y1="109.84" x2="48.87" y2="48.87"/><line data-s="5" class="el ord" x1="48.87" y1="48.87" x2="48.87" y2="-38.87"/><line data-s="5" class="el ord" x1="-29.01" y1="11.28" x2="-8.87" y2="-8.87"/><line data-s="5" class="el ord" x1="-8.87" y1="-8.87" x2="-8.87" y2="18.87"/><line data-s="5" class="el nrm line" x1="-14.64" y1="-14.64" x2="54.64" y2="54.64"/><line data-s="5" class="el nrm line" x1="-14.64" y1="24.64" x2="54.64" y2="-44.64"/><circle data-s="1" class="el pt o" cx="0" cy="0" r="0.85"/><circle data-s="1" class="el pt" cx="50" cy="0" r="0.85"/><circle data-s="1" class="el pt" cx="0" cy="50" r="0.85"/><circle data-s="1" class="el pt" cx="0" cy="-50" r="0.85"/><circle data-s="1" class="el pt" cx="20" cy="20" r="0.85"/><circle data-s="1" class="el pt" cx="20" cy="-10" r="0.85"/><circle data-s="3" class="el pt" cx="-8.49" cy="58.49" r="0.85"/><circle data-s="3" class="el pt" cx="-68.84" cy="68.84" r="0.85"/><circle data-s="3" class="el pt" cx="-20.56" cy="60.56" r="0.85"/><circle data-s="4" class="el pt key" cx="-12.1" cy="109.84" r="0.85"/><circle data-s="4" class="el pt key" cx="-29.01" cy="11.28" r="0.85"/><circle data-s="5" class="el pt key" cx="48.87" cy="48.87" r="0.85"/><circle data-s="5" class="el pt key" cx="-8.87" cy="-8.87" r="0.85"/><circle data-s="5" class="el pt key" cx="48.87" cy="-38.87" r="0.85"/><circle data-s="5" class="el pt key" cx="-8.87" cy="18.87" r="0.85"/><text data-s="1" class="el lab" x="63.5" y="-1.5" text-anchor="start">x<tspan class="sub" dy="1.0">12</tspan><tspan dy="-1.0">​</tspan></text><text data-s="1" class="el lab" x="-1.2" y="-1.6" text-anchor="end">O</text><text data-s="1" class="el lab" x="32.88" y="14.08" text-anchor="middle">R<tspan class="sub" dy="1.0">1</tspan><tspan dy="-1.0">​</tspan></text><text data-s="1" class="el lab" x="-2" y="-55" text-anchor="end">R<tspan class="sub" dy="1.0">2</tspan><tspan dy="-1.0">​</tspan></text><text data-s="1" class="el lab" x="51.4" y="-1.6" text-anchor="start">X</text><text data-s="1" class="el lab" x="1.8" y="52" text-anchor="start">Y′</text><text data-s="1" class="el lab" x="1.8" y="-51" text-anchor="start">Z″</text><text data-s="1" class="el lab" x="18.4" y="23.8" text-anchor="end">S′</text><text data-s="1" class="el lab" x="18.4" y="-11.6" text-anchor="end">S″</text><text data-s="2" class="el lab" x="-37.64" y="31.33" text-anchor="start">x<tspan class="sub" dy="1.0">13</tspan><tspan dy="-1.0">​</tspan></text><text data-s="3" class="el lab" x="-6.49" y="62.49" text-anchor="start">X‴ ≡ Y‴</text><text data-s="3" class="el lab" x="-67.04" y="67.24" text-anchor="start">Z‴</text><text data-s="3" class="el lab" x="-18.76" y="58.76" text-anchor="start">S‴</text><text data-s="3" class="el lab" x="-64.84" y="74.84" text-anchor="start">R<tspan class="sub" dy="1.0">3</tspan><tspan dy="-1.0">​</tspan></text><text data-s="4" class="el lab" x="-10.3" y="108.24" text-anchor="start">M‴</text><text data-s="4" class="el lab" x="-27.21" y="15.08" text-anchor="start">N‴</text><text data-s="4" class="el lab dim" x="-14.53" y="86.2" text-anchor="start">5</text><text data-s="4" class="el lab dim" x="-22.98" y="36.92" text-anchor="start">5</text><text data-s="5" class="el lab" x="50.67" y="52.47" text-anchor="start">M′</text><text data-s="5" class="el lab" x="-10.67" y="-10.47" text-anchor="end">N′</text><text data-s="5" class="el lab" x="50.67" y="-40.47" text-anchor="start">M″</text><text data-s="5" class="el lab" x="-7.07" y="22.47" text-anchor="start">N″</text></svg></div>
+  <ol class="steps"><li data-k="1"><b>Ravan R i tačka S.</b> Tragovi R₁ i R₂ ravni R(5; 5; 5). Visina tačke S nađe se horizontalom: h′ ∥ R₁ kroz S′, prodor kroz F na R₂, h″ ∥ x₁₂. Dobija se S(2; 2; 1).</li><li data-k="2"><b>Osa x₁₃ ⊥ R₁.</b> Za ravan zadatu tragovima horizontala je paralelna sa R₁, pa je x₁₃ okomita na R₁. Osa je postavljena iza tačke Y′, da ne siječe crtež.</li><li data-k="3"><b>Ravan kao prava R₃.</b> R₁ se u trećoj projekciji vidi kao tačka na osi x₁₃ (tu je i X‴ i Y‴). Z‴ se dobije iz O, sa visinom 5 cm. R₃ je prava kroz tu tačku i Z‴. S‴ mora pasti na R₃, to je provjera.</li><li data-k="4"><b>Normala i 5 cm.</b> Normala na ravan je u trećoj projekciji okomita na R₃ i u pravoj veličini, jer je paralelna sa P₃. Od S‴ se nanese 5 cm na obje strane: M‴ i N‴.</li><li data-k="5"><b>M i N nazad.</b> Normala je paralelna sa P₃, pa je n′ ∥ x₁₃ kroz S′. Ordinale iz M‴ i N‴ okomito na x₁₃ daju M′ i N′ na n′. M″ i N″ su na vertikalnim ordinalama, na visini koju M‴ i N‴ imaju od x₁₃. N‴ je s druge strane ose, pa je z_N negativno i N″ je ispod ose x₁₂.</li></ol>
+  <dl class="results"><div class="rr"><dt>Tačka S</dt><dd>S(2; 2; 1)</dd></div><div class="rr"><dt>M</dt><dd>M(4,89; 4,89; 3,89)</dd></div><div class="rr"><dt>N</dt><dd>N(−0,89; −0,89; −1,89)</dd></div><div class="rr"><dt>Na vježbi</dt><dd>isti rezultat, tamo dobijen obaranjem normale</dd></div></dl>
+  
+</figure>
+
+<h3>Udaljenost paralelnih ravni i ugao sa F</h3>
+<p>Paralelne ravni imaju paralelne tragove. Jedna osa x₁₃ ⊥ T₁ pretvara obje ravni u paralelne prave, a udaljenost ravni je razmak tih pravih. Za R ti trebaju samo jedna tačka (M) i smjer.</p>
+
+<figure class="ex" id="ex-d7">
+  <figcaption class="ex-head">
+    <span class="tag">Riješen primjer · vježba 5.1, O₂</span>
+    <p class="ex-task">Odrediti udaljenost između paralelnih ravni T i R, gdje R sadrži tačku M. Odrediti ugao koji ravni zaklapaju sa frontalnicom.</p>
+    <p class="ex-data">T(−6; 3; 5) · M(0; 1; 1) ∈ R, R ∥ T</p>
+  </figcaption>
+  <div class="ctrl" role="group" aria-label="Koraci konstrukcije"><button type="button" class="sb" data-k="1">1</button><button type="button" class="sb" data-k="2">2</button><button type="button" class="sb" data-k="3">3</button><button type="button" class="sb" data-k="4">4</button><button type="button" class="sb" data-k="5">5</button><button type="button" class="sb" data-k="6">6</button><button type="button" class="sb all on" data-k="all">Sve</button></div>
+  <div class="scroll"><svg class="drw" viewBox="-77 -74.5 165.24 138.5" style="min-width:545px;max-width:826px" role="img" aria-label="Crtež primjera"><defs><pattern id="g-d7" width="10" height="10" patternUnits="userSpaceOnUse" x="0" y="0"><path d="M10,0 V10 H0" class="grid"/></pattern></defs><rect x="-77" y="-74.5" width="165.24" height="138.5" fill="url(#g-d7)" class="paper"/><line data-s="1" class="el ax" x1="-70" y1="0" x2="30" y2="0"/><line data-s="1" class="el trH line" x1="-63" y1="-1.5" x2="54" y2="57"/><line data-s="1" class="el trF line" x1="-63" y1="2.5" x2="21" y2="-67.5"/><line data-s="1" class="el ord" x1="0" y1="10" x2="0" y2="-10"/><line data-s="2" class="el newax" x1="28.1" y1="5.11" x2="8.94" y2="43.42"/><line data-s="3" class="el ord" x1="0" y1="0" x2="69.24" y2="34.62"/><line data-s="3" class="el ord" x1="0" y1="10" x2="29.47" y2="24.73"/><line data-s="3" class="el res line" x1="0.53" y1="36.61" x2="81.24" y2="34.27"/><line data-s="3" class="el res2 line" x1="-0.52" y1="25.6" x2="59.45" y2="23.87"/><line data-s="4" class="el nrm line thick" x1="29.47" y1="24.73" x2="29.79" y2="35.76"/><line data-s="5" class="el newax" x1="5.63" y1="-65.11" x2="40.47" y2="-23.31"/><line data-s="6" class="el ord" x1="0" y1="0" x2="58.39" y2="-48.66"/><line data-s="6" class="el res line" x1="10.76" y1="-58.96" x2="66.21" y2="-46.97"/><path data-s="6" class="el arc" d="M20.53,-56.85 A10,10 0 0 1 17.16,-51.28"/><circle data-s="1" class="el pt o" cx="0" cy="0" r="0.85"/><circle data-s="1" class="el pt" cx="-60" cy="0" r="0.85"/><circle data-s="1" class="el pt" cx="0" cy="30" r="0.85"/><circle data-s="1" class="el pt" cx="0" cy="-50" r="0.85"/><circle data-s="1" class="el pt" cx="0" cy="10" r="0.85"/><circle data-s="1" class="el pt" cx="0" cy="-10" r="0.85"/><circle data-s="2" class="el pt" cx="12.52" cy="36.26" r="0.85"/><circle data-s="3" class="el pt" cx="69.24" cy="34.62" r="0.85"/><circle data-s="3" class="el pt" cx="29.47" cy="24.73" r="0.85"/><circle data-s="4" class="el pt key" cx="29.79" cy="35.76" r="0.85"/><circle data-s="5" class="el pt" cx="10.76" cy="-58.96" r="0.85"/><circle data-s="6" class="el pt" cx="58.39" cy="-48.66" r="0.85"/><text data-s="1" class="el lab" x="31.5" y="-1.5" text-anchor="start">x<tspan class="sub" dy="1.0">12</tspan><tspan dy="-1.0">​</tspan></text><text data-s="1" class="el lab" x="-1.2" y="-1.6" text-anchor="end">O</text><text data-s="1" class="el lab" x="-38" y="17" text-anchor="end">T<tspan class="sub" dy="1.0">1</tspan><tspan dy="-1.0">​</tspan></text><text data-s="1" class="el lab" x="-41" y="-21" text-anchor="end">T<tspan class="sub" dy="1.0">2</tspan><tspan dy="-1.0">​</tspan></text><text data-s="1" class="el lab" x="-61.6" y="-1.6" text-anchor="end">X</text><text data-s="1" class="el lab" x="-1.8" y="34" text-anchor="end">Y′</text><text data-s="1" class="el lab" x="-1.8" y="-51.6" text-anchor="end">Z″</text><text data-s="1" class="el lab" x="1.6" y="13.6" text-anchor="start">M′</text><text data-s="1" class="el lab" x="1.6" y="-11.4" text-anchor="start">M″</text><text data-s="2" class="el lab" x="10.44" y="46.92" text-anchor="start">x<tspan class="sub" dy="1.0">13</tspan><tspan dy="-1.0">​</tspan></text><text data-s="2" class="el lab" x="14.52" y="39.76" text-anchor="start">1</text><text data-s="3" class="el lab" x="71.04" y="33.02" text-anchor="start">Z‴</text><text data-s="3" class="el lab" x="31.27" y="28.33" text-anchor="start">M‴</text><text data-s="3" class="el lab" x="-0.97" y="37.81" text-anchor="end">T<tspan class="sub" dy="1.0">3</tspan><tspan dy="-1.0">​</tspan></text><text data-s="3" class="el lab" x="61.45" y="26.87" text-anchor="start">R<tspan class="sub" dy="1.0">3</tspan><tspan dy="-1.0">​</tspan></text><text data-s="4" class="el lab ang" x="27.43" y="30.25" text-anchor="end">d</text><text data-s="5" class="el lab" x="41.97" y="-25.31" text-anchor="start">x<tspan class="sub" dy="1.0">24</tspan><tspan dy="-1.0">​</tspan></text><text data-s="5" class="el lab" x="12.76" y="-60.46" text-anchor="start">K</text><text data-s="6" class="el lab" x="60.19" y="-50.46" text-anchor="start">Y<tspan class="sup" dy="-1.5">IV</tspan><tspan dy="1.5">​</tspan></text><text data-s="6" class="el lab" x="62.39" y="-44.66" text-anchor="start">T<tspan class="sub" dy="1.0">4</tspan><tspan dy="-1.0">​</tspan></text><text data-s="6" class="el lab ang" x="22.3" y="-50.77" text-anchor="middle">β</text></svg></div>
+  <ol class="steps"><li data-k="1"><b>Ravan T i tačka M.</b> Tragovi ravni T(−6; 3; 5): T₁ = X Y′ i T₂ = X Z″. Tačka M(0; 1; 1) je u ravni R ∥ T. Tragove ravni R ne moraš crtati za udaljenost.</li><li data-k="2"><b>Osa x₁₃ ⊥ T₁.</b> Obje ravni imaju paralelne prve tragove, pa jedna osa x₁₃ ⊥ T₁ čini obje ravni projicirajućim.</li><li data-k="3"><b>T₃ i R₃.</b> T₁ pada u tačku 1 na osi x₁₃. Z‴ se dobije iz O sa visinom 5. T₃ = 1Z‴. M‴ (visina 1) i R₃ kroz M‴ paralelno sa T₃.</li><li data-k="4"><b>Udaljenost d.</b> Udaljenost paralelnih ravni je razmak pravih T₃ i R₃: okomica iz M‴ na T₃, u pravoj veličini.</li><li data-k="5"><b>Ugao sa F: x₂₄ ⊥ T₂.</b> Za ugao sa F transformacija se radi iz druge projekcije: x₂₄ ⊥ T₂. T₂ pada u tačku K na osi x₂₄.</li><li data-k="6"><b>T₄ i ugao β.</b> Y_T ima drugu projekciju u O i y = 3: ordinala iz O okomito na x₂₄ i 3 cm daju Y<sup>IV</sup>. T₄ = K Y<sup>IV</sup>, a ugao T₄ sa x₂₄ je ugao ravni sa F. R ima isti ugao, jer je paralelna sa T.</li></ol>
+  <dl class="results"><div class="rr"><dt>Udaljenost</dt><dd>d = 1,10 cm (na vježbi 1,10 cm)</dd></div><div class="rr"><dt>Ugao sa F</dt><dd>β = 38,0° za obje ravni (na vježbi 38,0°)</dd></div></dl>
+  
+</figure>
+<p><b>Udaljenost tačke od prave</b> je u dijelu <a href="#ex-d2">Prava kao tačka</a>.</p>
+<div class="next"><button type="button" class="nextb" data-go="uglovi">Dalje: Ugao ravni →</button></div>
+</section>
+
+<!-- ===================================================== -->
+<section id="uglovi" class="panel" role="tabpanel" aria-labelledby="t-uglovi" hidden>
+<p class="sn">Z2 ili Z3</p>
+<h2>Ugao dvije ravni</h2>
+<p>Ugao dvije ravni se vidi u pravoj veličini kad je presječnica s okomita na ravan projekcije. Tada je s tačka, a obje ravni su prave kroz tu tačku.</p>
+<ul>
+  <li><b>Prvi tragovi paralelni:</b> s je horizontala. Jedna transformacija, x₁₃ ⊥ T₁. Ovo je zadatak sa vježbe 6.1.</li>
+  <li><b>Drugi tragovi paralelni:</b> s je frontala. Jedna transformacija, x₂₃ ⊥ T₂.</li>
+  <li><b>Opšti slučaj:</b> nađi s preko tragova (istoimeni tragovi se sijeku u prodorima presječnice). Zatim Z1 i Z2 nad pravom s: x₁₃ ∥ s′, pa x₃₄ ⊥ s‴. U četvrtoj projekciji je s tačka. Prenesi još po jednu tačku svake ravni (npr. tačku na tragu). Prave kroz s<sup>IV</sup> i te tačke su ravni, a ugao među njima je traženi ugao.</li>
+</ul>
+
+<figure class="ex" id="ex-d8">
+  <figcaption class="ex-head">
+    <span class="tag">Riješen primjer · vježba 6.1, O₂</span>
+    <p class="ex-task">Transformacijom odrediti pravu veličinu ugla između ravni T i R čiji su prvi tragovi paralelni.</p>
+    <p class="ex-data">T(−6; 3; 5) · R(3; ?; 5), R₁ ∥ T₁ → R(3; −1,5; 5)</p>
+  </figcaption>
+  <div class="ctrl" role="group" aria-label="Koraci konstrukcije"><button type="button" class="sb" data-k="1">1</button><button type="button" class="sb" data-k="2">2</button><button type="button" class="sb" data-k="3">3</button><button type="button" class="sb" data-k="4">4</button><button type="button" class="sb all on" data-k="all">Sve</button></div>
+  <div class="scroll"><svg class="drw" viewBox="-77 -72 192.1 145.64" style="min-width:634px;max-width:960px" role="img" aria-label="Crtež primjera"><defs><pattern id="g-d8" width="10" height="10" patternUnits="userSpaceOnUse" x="0" y="0"><path d="M10,0 V10 H0" class="grid"/></pattern></defs><rect x="-77" y="-72" width="192.1" height="145.64" fill="url(#g-d8)" class="paper"/><line data-s="1" class="el ax" x1="-70" y1="0" x2="40" y2="0"/><line data-s="1" class="el trH line" x1="-63" y1="-1.5" x2="54" y2="57"/><line data-s="1" class="el trF line" x1="-63" y1="2.5" x2="18" y2="-65"/><line data-s="1" class="el trH line r" x1="-12" y1="-21" x2="108" y2="39"/><line data-s="1" class="el trF line r" x1="33" y1="5" x2="-9" y2="-65"/><line data-s="2" class="el hz line" x1="-22.36" y1="-11.18" x2="22.36" y2="11.18"/><line data-s="2" class="el hz line" x1="-25" y1="-50" x2="25" y2="-50"/><line data-s="2" class="el newax" x1="57.73" y1="-6.26" x2="23.63" y2="61.94"/><line data-s="3" class="el ord" x1="0" y1="0" x2="88.4" y2="44.2"/><line data-s="3" class="el res line" x1="25.68" y1="46.01" x2="100.39" y2="43.85"/><line data-s="3" class="el res2 line" x1="45.19" y1="5.86" x2="97.37" y2="52.16"/><path data-s="4" class="el arc" d="M77.4,44.52 A11,11 0 0 1 80.17,36.9"/><circle data-s="1" class="el pt o" cx="0" cy="0" r="0.85"/><circle data-s="1" class="el pt" cx="-60" cy="0" r="0.85"/><circle data-s="1" class="el pt" cx="30" cy="0" r="0.85"/><circle data-s="1" class="el pt" cx="0" cy="-50" r="0.85"/><circle data-s="1" class="el pt" cx="0" cy="30" r="0.85"/><circle data-s="1" class="el pt" cx="0" cy="-15" r="0.85"/><circle data-s="3" class="el pt" cx="31.68" cy="45.84" r="0.85"/><circle data-s="3" class="el pt" cx="49.68" cy="9.84" r="0.85"/><circle data-s="3" class="el pt key" cx="88.4" cy="44.2" r="0.85"/><text data-s="1" class="el lab" x="41.5" y="-1.5" text-anchor="start">x<tspan class="sub" dy="1.0">12</tspan><tspan dy="-1.0">​</tspan></text><text data-s="1" class="el lab" x="-1.2" y="-1.6" text-anchor="end">O</text><text data-s="1" class="el lab" x="-38" y="17" text-anchor="end">T<tspan class="sub" dy="1.0">1</tspan><tspan dy="-1.0">​</tspan></text><text data-s="1" class="el lab" x="-41" y="-21" text-anchor="end">T<tspan class="sub" dy="1.0">2</tspan><tspan dy="-1.0">​</tspan></text><text data-s="1" class="el lab" x="103.5" y="34.5" text-anchor="start">R<tspan class="sub" dy="1.0">1</tspan><tspan dy="-1.0">​</tspan></text><text data-s="1" class="el lab" x="20.5" y="-21" text-anchor="start">R<tspan class="sub" dy="1.0">2</tspan><tspan dy="-1.0">​</tspan></text><text data-s="1" class="el lab" x="-61.6" y="-1.6" text-anchor="end">X<tspan class="sub" dy="1.0">T</tspan><tspan dy="-1.0">​</tspan></text><text data-s="1" class="el lab" x="31.6" y="3.8" text-anchor="start">X<tspan class="sub" dy="1.0">R</tspan><tspan dy="-1.0">​</tspan></text><text data-s="1" class="el lab" x="1.8" y="-51.6" text-anchor="start">Z″</text><text data-s="1" class="el lab" x="-1.8" y="34" text-anchor="end">Y<tspan class="sub" dy="1.0">T′</tspan><tspan dy="-1.0">​</tspan></text><text data-s="1" class="el lab" x="-1.8" y="-16.6" text-anchor="end">Y<tspan class="sub" dy="1.0">R′</tspan><tspan dy="-1.0">​</tspan></text><text data-s="2" class="el lab" x="23.36" y="14.18" text-anchor="start">s′</text><text data-s="2" class="el lab" x="26.5" y="-51" text-anchor="start">s″</text><text data-s="2" class="el lab" x="25.13" y="65.44" text-anchor="start">x<tspan class="sub" dy="1.0">13</tspan><tspan dy="-1.0">​</tspan></text><text data-s="3" class="el lab" x="30.08" y="49.44" text-anchor="end">1</text><text data-s="3" class="el lab" x="51.28" y="13.44" text-anchor="start">2</text><text data-s="3" class="el lab" x="90.4" y="42.2" text-anchor="start">Z‴ ≡ s‴</text><text data-s="3" class="el lab" x="101.89" y="45.85" text-anchor="start">T<tspan class="sub" dy="1.0">3</tspan><tspan dy="-1.0">​</tspan></text><text data-s="3" class="el lab" x="98.87" y="54.16" text-anchor="start">R<tspan class="sub" dy="1.0">3</tspan><tspan dy="-1.0">​</tspan></text><text data-s="4" class="el lab ang" x="74.77" y="40.45" text-anchor="middle">φ</text></svg></div>
+  <ol class="steps"><li data-k="1"><b>Ravni T i R.</b> T(−6; 3; 5) i R(3; −1,5; 5). Prvi tragovi su paralelni, a obje ravni prolaze kroz Z(0; 0; 5).</li><li data-k="2"><b>Presječnica i osa x₁₃.</b> Presječnica s ide kroz Z i paralelna je sa T₁ i R₁, dakle horizontala je. Osa x₁₃ ⊥ T₁ čini P₃ okomitom na s.</li><li data-k="3"><b>Ravni kao prave.</b> s se u trećoj projekciji vidi kao tačka Z‴. T₁ i R₁ padaju u tačke 1 i 2 na osi x₁₃. T₃ = 1Z‴ i R₃ = 2Z‴.</li><li data-k="4"><b>Ugao φ.</b> Ugao između T₃ i R₃ je prava veličina ugla između ravni. Daje se oštri ugao, a tupi je njegov suplement.</li></ol>
+  <dl class="results"><div class="rr"><dt>Ugao</dt><dd>φ = 43,2°, suplement 136,8° (na vježbi 43,2°)</dd></div></dl>
+  
+</figure>
+<div class="next"><button type="button" class="nextb" data-go="presjeci">Dalje: Presjeci →</button></div>
+</section>
+
+<!-- ===================================================== -->
+<section id="presjeci" class="panel" role="tabpanel" aria-labelledby="t-presjeci" hidden>
+<p class="sn">Z3 primijenjen</p>
+<h2>Prodori i presjeci, vidljivost</h2>
+<h3>Prodor prave kroz trougao</h3>
+<ol>
+  <li>Horizontala trougla, x₁₃ ⊥ h′. Trougao u trećoj projekciji je duž.</li>
+  <li>Prenesi dvije tačke prave i nacrtaj s‴.</li>
+  <li>P‴ = s‴ ∩ duž trougla. Nazad: ordinala okomito na x₁₃ do s′, pa vertikalno do s″.</li>
+  <li>Provjeri da li je P′ unutar A′B′C′. Ako nije, prava probada ravan, ali ne i trougao.</li>
+</ol>
+
+<figure class="ex" id="ex-d9">
+  <figcaption class="ex-head">
+    <span class="tag">Riješen primjer · vježba 4.2, O₄</span>
+    <p class="ex-task">Odrediti prodor prave s kroz trougao ABC i vidljivost prave. Prava s je presječnica ravni T(8; 6; 6) i R(4; 10; 5).</p>
+    <p class="ex-data">S₁(2,29; 4,29; 0) · S₂(−2; 0; 7,5) · A(0; 8; 5) · B(−2; 2; 1) · C(3; 0; 2)</p>
+  </figcaption>
+  <div class="ctrl" role="group" aria-label="Koraci konstrukcije"><button type="button" class="sb" data-k="1">1</button><button type="button" class="sb" data-k="2">2</button><button type="button" class="sb" data-k="3">3</button><button type="button" class="sb" data-k="4">4</button><button type="button" class="sb" data-k="5">5</button><button type="button" class="sb all on" data-k="all">Sve</button></div>
+  <div class="scroll"><svg class="drw" viewBox="-39 -100.2 165.76 192.4" style="min-width:547px;max-width:829px" role="img" aria-label="Crtež primjera"><defs><pattern id="g-d9" width="10" height="10" patternUnits="userSpaceOnUse" x="0" y="0"><path d="M10,0 V10 H0" class="grid"/></pattern></defs><rect x="-39" y="-100.2" width="165.76" height="192.4" fill="url(#g-d9)" class="paper"/><polygon data-s="1" class="el tri t1" points="0,80 -20,20 30,0"/><polygon data-s="1" class="el tri t1" points="0,-50 -20,-10 30,-20"/><line data-s="1" class="el ax" x1="-32" y1="0" x2="42" y2="0"/><line data-s="1" class="el ord" x1="0" y1="80" x2="0" y2="-50"/><line data-s="1" class="el ord" x1="-20" y1="20" x2="-20" y2="-10"/><line data-s="1" class="el ord" x1="30" y1="0" x2="30" y2="-20"/><line data-s="1" class="el edge" x1="0" y1="80" x2="-20" y2="20"/><line data-s="1" class="el edge" x1="0" y1="-50" x2="-20" y2="-10"/><line data-s="1" class="el edge" x1="-20" y1="20" x2="30" y2="0"/><line data-s="1" class="el edge" x1="-20" y1="-10" x2="30" y2="-20"/><line data-s="1" class="el edge" x1="30" y1="0" x2="0" y2="80"/><line data-s="1" class="el edge" x1="30" y1="-20" x2="0" y2="-50"/><line data-s="1" data-e="4" class="el s0 line" x1="-22.14" y1="-2.14" x2="37.86" y2="57.86"/><line data-s="1" data-e="4" class="el s0 line" x1="-22.14" y1="-78.75" x2="37.86" y2="26.25"/><line data-s="5" class="el sline vis" x1="-22.14" y1="-2.14" x2="8.09" y2="28.09"/><line data-s="5" class="el sline hid" x1="8.09" y1="28.09" x2="16.36" y2="36.36"/><line data-s="5" class="el sline vis" x1="16.36" y1="36.36" x2="37.86" y2="57.86"/><line data-s="5" class="el sline vis" x1="-22.14" y1="-78.75" x2="-2.67" y2="-44.67"/><line data-s="5" class="el sline hid" x1="-2.67" y1="-44.67" x2="8.09" y2="-25.85"/><line data-s="5" class="el sline vis" x1="8.09" y1="-25.85" x2="37.86" y2="26.25"/><line data-s="1" class="el ord" x1="22.86" y1="42.86" x2="22.86" y2="0"/><line data-s="1" class="el ord" x1="-20" y1="0" x2="-20" y2="-75"/><line data-s="2" class="el hz line" x1="30" y1="-20" x2="-15" y2="-20"/><line data-s="2" class="el hz line" x1="30" y1="0" x2="-15" y2="35"/><line data-s="2" class="el ord" x1="-15" y1="35" x2="-15" y2="-20"/><line data-s="3" class="el newax" x1="81.92" y1="33.72" x2="-16.72" y2="-93.1"/><line data-s="3" class="el ord" x1="0" y1="80" x2="112.94" y2="-7.84"/><line data-s="3" class="el ord" x1="-20" y1="20" x2="44.75" y2="-30.36"/><line data-s="3" class="el ord" x1="30" y1="0" x2="61.79" y2="-24.73"/><line data-s="3" class="el res line" x1="119.76" y1="-5.59" x2="37.93" y2="-32.61"/><line data-s="3" class="el s0 line" x1="87.48" y1="-87.4" x2="56.29" y2="43.52"/><line data-s="4" class="el ord" x1="71.76" y1="-21.44" x2="8.09" y2="28.09"/><line data-s="4" class="el ord" x1="8.09" y1="28.09" x2="8.09" y2="-25.85"/><line data-s="5" class="el ord" x1="-5.71" y1="14.29" x2="78.94" y2="-51.55"/><circle data-s="1" class="el pt o" cx="0" cy="0" r="0.85"/><circle data-s="1" class="el pt" cx="0" cy="80" r="0.85"/><circle data-s="1" class="el pt" cx="0" cy="-50" r="0.85"/><circle data-s="1" class="el pt" cx="-20" cy="20" r="0.85"/><circle data-s="1" class="el pt" cx="-20" cy="-10" r="0.85"/><circle data-s="1" class="el pt" cx="30" cy="0" r="0.85"/><circle data-s="1" class="el pt" cx="30" cy="-20" r="0.85"/><circle data-s="1" class="el pt" cx="22.86" cy="42.86" r="0.85"/><circle data-s="1" class="el pt" cx="-20" cy="-75" r="0.85"/><circle data-s="2" class="el pt" cx="-15" cy="35" r="0.85"/><circle data-s="2" class="el pt" cx="-15" cy="-20" r="0.85"/><circle data-s="3" class="el pt" cx="112.94" cy="-7.84" r="0.85"/><circle data-s="3" class="el pt" cx="44.75" cy="-30.36" r="0.85"/><circle data-s="3" class="el pt" cx="61.79" cy="-24.73" r="0.85"/><circle data-s="4" class="el pt key" cx="71.76" cy="-21.44" r="0.85"/><circle data-s="4" class="el pt key" cx="8.09" cy="28.09" r="0.85"/><circle data-s="4" class="el pt key" cx="8.09" cy="-25.85" r="0.85"/><circle data-s="5" class="el pt key" cx="-5.71" cy="14.29" r="0.85"/><circle data-s="5" class="el pt key" cx="78.94" cy="-51.55" r="0.85"/><circle data-s="5" class="el pt key" cx="49.62" cy="-28.75" r="0.85"/><text data-s="1" class="el lab" x="43.5" y="-1.5" text-anchor="start">x<tspan class="sub" dy="1.0">12</tspan><tspan dy="-1.0">​</tspan></text><text data-s="1" class="el lab" x="-1.2" y="-1.6" text-anchor="end">O</text><text data-s="1" class="el lab" x="1.6" y="84" text-anchor="start">A′</text><text data-s="1" class="el lab" x="1.6" y="-51.6" text-anchor="start">A″</text><text data-s="1" class="el lab" x="-21.6" y="24" text-anchor="end">B′</text><text data-s="1" class="el lab" x="-21.6" y="-6.4" text-anchor="end">B″</text><text data-s="1" class="el lab" x="31.6" y="4" text-anchor="start">C′</text><text data-s="1" class="el lab" x="31.6" y="-16.2" text-anchor="start">C″</text><text data-s="1" class="el lab" x="39.36" y="60.86" text-anchor="start">s′</text><text data-s="1" class="el lab" x="-25.14" y="-79.75" text-anchor="end">s″</text><text data-s="1" class="el lab" x="24.46" y="46.66" text-anchor="start">S<tspan class="sub" dy="1.0">1′</tspan><tspan dy="-1.0">​</tspan></text><text data-s="1" class="el lab" x="-18.4" y="-76.6" text-anchor="start">S<tspan class="sub" dy="1.0">2″</tspan><tspan dy="-1.0">​</tspan></text><text data-s="2" class="el lab" x="-16.6" y="38.8" text-anchor="end">1′</text><text data-s="2" class="el lab" x="-16.6" y="-21.4" text-anchor="end">1″</text><text data-s="3" class="el lab" x="-15.22" y="-89.6" text-anchor="start">x<tspan class="sub" dy="1.0">13</tspan><tspan dy="-1.0">​</tspan></text><text data-s="3" class="el lab" x="114.74" y="-9.44" text-anchor="start">A‴</text><text data-s="3" class="el lab" x="46.55" y="-31.96" text-anchor="start">B‴</text><text data-s="3" class="el lab" x="63.59" y="-26.33" text-anchor="start">C‴</text><text data-s="3" class="el lab" x="57.79" y="46.52" text-anchor="start">s‴</text><text data-s="4" class="el lab" x="73.56" y="-17.64" text-anchor="start">P‴</text><text data-s="4" class="el lab" x="9.89" y="26.29" text-anchor="start">P′</text><text data-s="4" class="el lab" x="9.89" y="-27.65" text-anchor="start">P″</text><text data-s="5" class="el lab" x="-7.51" y="12.49" text-anchor="end">D′</text><text data-s="5" class="el lab" x="80.74" y="-53.15" text-anchor="start">D‴ na s</text><text data-s="5" class="el lab" x="47.82" y="-24.35" text-anchor="end">D‴ na BC</text></svg></div>
+  <ol class="steps"><li data-k="1"><b>Prava s i trougao.</b> s je presječnica ravni T i R iz zadatka O₄, zadata prodorima S₁(2,29; 4,29; 0) i S₂(−2; 0; 7,5). Trougao ABC u obje projekcije.</li><li data-k="2"><b>Horizontala trougla.</b> h kroz C (z = 2): h″ ∥ x₁₂ siječe A″B″ u 1″, ordinala daje 1′ na A′B′. h′ = C′1′.</li><li data-k="3"><b>x₁₃ ⊥ h′, treća projekcija.</b> Ordinale okomito na x₁₃ i visine z za A, B, C i za dvije tačke prave s. Trougao je duž A‴B‴C‴, a prava je s‴.</li><li data-k="4"><b>Prodor P.</b> P‴ = s‴ ∩ A‴B‴C‴. Ordinala okomito na x₁₃ vraća P′ na s′, a vertikalna ordinala P″ na s″.</li><li data-k="5"><b>Vidljivost.</b> U prvoj projekciji: ukrštanje s′ i B′C′ je jedna tačka D′. Njena ordinala u trećoj projekciji siječe s‴ i pravu trougla: dalja od x₁₃ je viša, pa je ta vidljiva odozgo. U drugoj projekciji poredi se y: ispred je ono sa većim y, čita se iz prve projekcije.</li></ol>
+  <dl class="results"><div class="rr"><dt>Prodor</dt><dd>P(0,81; 2,81; 2,58) (na vježbi isti), unutar trougla</dd></div><div class="rr"><dt>Vidljivost</dt><dd>s′ je skrivena od P′ do izlaska iz trougla, s″ od ulaska u trougao do P″</dd></div></dl>
+  <p class="note">Na vježbi je prodor nađen pomoćnom prvoprojicirajućom ravni. Transformacija daje istu tačku.</p>
+</figure>
+<h3>Presjek dva trougla</h3>
+<p>Jedan trougao transformiši u duž. U trećoj projekciji odmah vidiš gdje stranice drugog trougla prolaze kroz njegovu ravan.</p>
+<ol>
+  <li>Izaberi trougao čija se horizontala lako crta. Taj trougao postaje duž u trećoj projekciji.</li>
+  <li>Nađi gdje stranice drugog trougla sijeku tu duž: to su prodori stranica kroz ravan prvog trougla. Obično su dva.</li>
+  <li>Vrati te dvije tačke u prvu projekciju. Prava kroz njih je presječnica ravni s′.</li>
+  <li>Presjek trouglova je dio presječnice koji je unutar oba trougla. Ako je neki prodor van prvog trougla (kao tačka 2 ovdje), krajnja tačka presjeka je mjesto gdje s′ izlazi iz tog trougla (Q′ na K′L′).</li>
+  <li>Vidljivost: vidi pravila ispod primjera.</li>
+</ol>
+
+<figure class="ex" id="ex-d10">
+  <figcaption class="ex-head">
+    <span class="tag">Riješen primjer · vježba 6.1, O₃</span>
+    <p class="ex-task">Metodom transformacije ravni odrediti presjek trougla ABC sa trouglom KLM i riješiti međusobnu vidljivost.</p>
+    <p class="ex-data">A(6,5; 1,5; 1) · B(0,5; 5; 2) · C(1,5; 0,5; 5,5) · K(6; 1; 5) · L(0,5; 1,5; 1) · M(4,5; 4,5; 0,5)</p>
+  </figcaption>
+  <div class="ctrl" role="group" aria-label="Koraci konstrukcije"><button type="button" class="sb" data-k="1">1</button><button type="button" class="sb" data-k="2">2</button><button type="button" class="sb" data-k="3">3</button><button type="button" class="sb" data-k="4">4</button><button type="button" class="sb" data-k="5">5</button><button type="button" class="sb" data-k="6">6</button><button type="button" class="sb all on" data-k="all">Sve</button></div>
+  <div class="scroll"><svg class="drw" viewBox="-13 -67.2 146.79 168.27" style="min-width:484px;max-width:734px" role="img" aria-label="Crtež primjera"><defs><pattern id="g-d10" width="10" height="10" patternUnits="userSpaceOnUse" x="0" y="0"><path d="M10,0 V10 H0" class="grid"/></pattern></defs><rect x="-13" y="-67.2" width="146.79" height="168.27" fill="url(#g-d10)" class="paper"/><polygon data-s="1" class="el tri t1" points="65,15 5,50 15,5"/><polygon data-s="1" class="el tri t1" points="65,-10 5,-20 15,-55"/><polygon data-s="1" class="el tri t2" points="60,10 5,15 45,45"/><polygon data-s="1" class="el tri t2" points="60,-50 5,-10 45,-5"/><polygon data-s="3" class="el tri t1" points="91.86,31.83 67.66,89.27 120.39,71.04"/><line data-s="1" class="el ax" x1="-6" y1="0" x2="110" y2="0"/><line data-s="1" data-e="5" class="el e1 edge" x1="65" y1="15" x2="5" y2="50"/><line data-s="1" data-e="5" class="el e1 edge" x1="65" y1="-10" x2="5" y2="-20"/><line data-s="6" class="el e1 vis" x1="65" y1="15" x2="55.48" y2="20.56"/><line data-s="6" class="el e1 hid" x1="55.48" y1="20.56" x2="37.64" y2="30.96"/><line data-s="6" class="el e1 vis" x1="37.64" y1="30.96" x2="5" y2="50"/><line data-s="6" class="el e1 vis" x1="65" y1="-10" x2="47.63" y2="-12.89"/><line data-s="6" class="el e1 hid" x1="47.63" y1="-12.89" x2="37.64" y2="-14.56"/><line data-s="6" class="el e1 vis" x1="37.64" y1="-14.56" x2="5" y2="-20"/><line data-s="1" data-e="5" class="el e1 edge" x1="5" y1="50" x2="15" y2="5"/><line data-s="1" data-e="5" class="el e1 edge" x1="5" y1="-20" x2="15" y2="-55"/><line data-s="6" class="el e1 vis" x1="5" y1="50" x2="15" y2="5"/><line data-s="6" class="el e1 vis" x1="5" y1="-20" x2="15" y2="-55"/><line data-s="1" data-e="5" class="el e1 edge" x1="15" y1="5" x2="65" y2="15"/><line data-s="1" data-e="5" class="el e1 edge" x1="15" y1="-55" x2="65" y2="-10"/><line data-s="6" class="el e1 vis" x1="15" y1="5" x2="46.25" y2="11.25"/><line data-s="6" class="el e1 hid" x1="46.25" y1="11.25" x2="58.42" y2="13.68"/><line data-s="6" class="el e1 vis" x1="58.42" y1="13.68" x2="65" y2="15"/><line data-s="6" class="el e1 vis" x1="15" y1="-55" x2="38.18" y2="-34.13"/><line data-s="6" class="el e1 hid" x1="38.18" y1="-34.13" x2="50.9" y2="-22.69"/><line data-s="6" class="el e1 vis" x1="50.9" y1="-22.69" x2="65" y2="-10"/><line data-s="1" data-e="5" class="el e2 edge" x1="60" y1="10" x2="5" y2="15"/><line data-s="1" data-e="5" class="el e2 edge" x1="60" y1="-50" x2="5" y2="-10"/><line data-s="6" class="el e2 vis" x1="60" y1="10" x2="36.56" y2="12.13"/><line data-s="6" class="el e2 hid" x1="36.56" y1="12.13" x2="12.94" y2="14.28"/><line data-s="6" class="el e2 vis" x1="12.94" y1="14.28" x2="5" y2="15"/><line data-s="6" class="el e2 vis" x1="60" y1="-50" x2="36.56" y2="-32.96"/><line data-s="6" class="el e2 hid" x1="36.56" y1="-32.96" x2="16.19" y2="-18.14"/><line data-s="6" class="el e2 vis" x1="16.19" y1="-18.14" x2="5" y2="-10"/><line data-s="1" data-e="5" class="el e2 edge" x1="5" y1="15" x2="45" y2="45"/><line data-s="1" data-e="5" class="el e2 edge" x1="5" y1="-10" x2="45" y2="-5"/><line data-s="6" class="el e2 vis" x1="5" y1="15" x2="11.67" y2="20"/><line data-s="6" class="el e2 hid" x1="11.67" y1="20" x2="31.25" y2="34.69"/><line data-s="6" class="el e2 vis" x1="31.25" y1="34.69" x2="45" y2="45"/><line data-s="6" class="el e2 vis" x1="5" y1="-10" x2="45" y2="-5"/><line data-s="1" data-e="5" class="el e2 edge" x1="45" y1="45" x2="60" y2="10"/><line data-s="1" data-e="5" class="el e2 edge" x1="45" y1="-5" x2="60" y2="-50"/><line data-s="6" class="el e2 vis" x1="45" y1="45" x2="60" y2="10"/><line data-s="6" class="el e2 vis" x1="45" y1="-5" x2="60" y2="-50"/><line data-s="2" class="el hz line" x1="5" y1="-10" x2="46.67" y2="-10"/><line data-s="2" class="el hz line" x1="5" y1="15" x2="46.67" y2="41.11"/><line data-s="2" class="el ord" x1="46.67" y1="41.11" x2="46.67" y2="-10"/><line data-s="3" class="el newax" x1="104.25" y1="-6.78" x2="46.47" y2="85.43"/><line data-s="3" class="el ord" x1="65" y1="15" x2="91.86" y2="31.83"/><line data-s="3" class="el ord" x1="5" y1="50" x2="67.66" y2="89.27"/><line data-s="3" class="el ord" x1="15" y1="5" x2="120.39" y2="71.04"/><line data-s="3" class="el ord" x1="60" y1="10" x2="126.59" y2="51.73"/><line data-s="3" class="el ord" x1="5" y1="15" x2="74.94" y2="58.83"/><line data-s="3" class="el ord" x1="45" y1="45" x2="68.48" y2="59.71"/><line data-s="3" class="el e1 edge" x1="91.86" y1="31.83" x2="67.66" y2="89.27"/><line data-s="3" class="el e1 edge" x1="67.66" y1="89.27" x2="120.39" y2="71.04"/><line data-s="3" class="el e1 edge" x1="120.39" y1="71.04" x2="91.86" y2="31.83"/><line data-s="3" class="el res line" x1="126.59" y1="51.73" x2="68.48" y2="59.71"/><line data-s="4" class="el ord" x1="80.82" y1="58.02" x2="37.64" y2="30.96"/><line data-s="4" class="el ord" x1="108.18" y1="54.26" x2="36.4" y2="9.28"/><line data-s="5" class="el s0 line" x1="35.4" y1="-8.06" x2="38.27" y2="41.8"/><line data-s="5" class="el ord" x1="37.64" y1="30.96" x2="37.64" y2="-14.56"/><line data-s="5" class="el ord" x1="36.56" y1="12.13" x2="36.56" y2="-32.96"/><line data-s="5" class="el cut line" x1="37.64" y1="30.96" x2="36.56" y2="12.13"/><line data-s="5" class="el cut line" x1="37.64" y1="-14.56" x2="36.56" y2="-32.96"/><circle data-s="1" class="el pt o" cx="0" cy="0" r="0.85"/><circle data-s="1" class="el pt" cx="65" cy="15" r="0.85"/><circle data-s="1" class="el pt" cx="65" cy="-10" r="0.85"/><circle data-s="1" class="el pt" cx="5" cy="50" r="0.85"/><circle data-s="1" class="el pt" cx="5" cy="-20" r="0.85"/><circle data-s="1" class="el pt" cx="15" cy="5" r="0.85"/><circle data-s="1" class="el pt" cx="15" cy="-55" r="0.85"/><circle data-s="1" class="el pt" cx="60" cy="10" r="0.85"/><circle data-s="1" class="el pt" cx="60" cy="-50" r="0.85"/><circle data-s="1" class="el pt" cx="5" cy="15" r="0.85"/><circle data-s="1" class="el pt" cx="5" cy="-10" r="0.85"/><circle data-s="1" class="el pt" cx="45" cy="45" r="0.85"/><circle data-s="1" class="el pt" cx="45" cy="-5" r="0.85"/><circle data-s="2" class="el pt" cx="46.67" cy="41.11" r="0.85"/><circle data-s="2" class="el pt" cx="46.67" cy="-10" r="0.85"/><circle data-s="3" class="el pt" cx="91.86" cy="31.83" r="0.85"/><circle data-s="3" class="el pt" cx="67.66" cy="89.27" r="0.85"/><circle data-s="3" class="el pt" cx="120.39" cy="71.04" r="0.85"/><circle data-s="3" class="el pt" cx="126.59" cy="51.73" r="0.85"/><circle data-s="3" class="el pt" cx="74.94" cy="58.83" r="0.85"/><circle data-s="3" class="el pt" cx="68.48" cy="59.71" r="0.85"/><circle data-s="4" class="el pt key" cx="80.82" cy="58.02" r="0.85"/><circle data-s="4" class="el pt key" cx="108.18" cy="54.26" r="0.85"/><circle data-s="4" class="el pt key" cx="37.64" cy="30.96" r="0.85"/><circle data-s="4" class="el pt key" cx="36.4" cy="9.28" r="0.85"/><circle data-s="5" class="el pt key" cx="36.56" cy="12.13" r="0.85"/><circle data-s="5" class="el pt key" cx="37.64" cy="-14.56" r="0.85"/><circle data-s="5" class="el pt key" cx="36.56" cy="-32.96" r="0.85"/><text data-s="1" class="el lab" x="111.5" y="-1.5" text-anchor="start">x<tspan class="sub" dy="1.0">12</tspan><tspan dy="-1.0">​</tspan></text><text data-s="1" class="el lab" x="-1.2" y="-1.6" text-anchor="end">O</text><text data-s="1" class="el lab" x="66.6" y="18.6" text-anchor="start">A′</text><text data-s="1" class="el lab" x="66.6" y="-6.4" text-anchor="start">A″</text><text data-s="1" class="el lab" x="3.4" y="54" text-anchor="end">B′</text><text data-s="1" class="el lab" x="3.2" y="-21.2" text-anchor="end">B″</text><text data-s="1" class="el lab" x="13.4" y="3.6" text-anchor="end">C′</text><text data-s="1" class="el lab" x="13.4" y="-56.6" text-anchor="end">C″</text><text data-s="1" class="el lab" x="61.6" y="8.6" text-anchor="start">K′</text><text data-s="1" class="el lab" x="61.6" y="-51.6" text-anchor="start">K″</text><text data-s="1" class="el lab" x="3.2" y="13.8" text-anchor="end">L′</text><text data-s="1" class="el lab" x="3.2" y="-6.4" text-anchor="end">L″</text><text data-s="1" class="el lab" x="46.6" y="49" text-anchor="start">M′</text><text data-s="1" class="el lab" x="46.6" y="-1.4" text-anchor="start">M″</text><text data-s="2" class="el lab" x="48.27" y="44.91" text-anchor="start">1′</text><text data-s="2" class="el lab" x="48.27" y="-11.4" text-anchor="start">1″</text><text data-s="3" class="el lab" x="39.47" y="87.43" text-anchor="end">x<tspan class="sub" dy="1.0">13</tspan><tspan dy="-1.0">​</tspan></text><text data-s="3" class="el lab" x="93.66" y="30.43" text-anchor="start">A‴</text><text data-s="3" class="el lab" x="69.46" y="92.87" text-anchor="start">B‴</text><text data-s="3" class="el lab" x="122.19" y="69.44" text-anchor="start">C‴</text><text data-s="3" class="el lab" x="124.79" y="50.13" text-anchor="end">K‴</text><text data-s="3" class="el lab" x="75.54" y="63.23" text-anchor="start">L‴</text><text data-s="3" class="el lab" x="66.68" y="63.51" text-anchor="end">M‴</text><text data-s="4" class="el lab" x="79.42" y="56.02" text-anchor="end">P‴</text><text data-s="4" class="el lab" x="106.38" y="52.66" text-anchor="end">2‴</text><text data-s="4" class="el lab" x="39.24" y="34.96" text-anchor="start">P′</text><text data-s="4" class="el lab" x="38" y="13.28" text-anchor="start">2′</text><text data-s="5" class="el lab" x="34.76" y="10.53" text-anchor="end">Q′</text><text data-s="5" class="el lab" x="39.44" y="-10.76" text-anchor="start">P″</text><text data-s="5" class="el lab" x="34.76" y="-34.56" text-anchor="end">Q″</text><text data-s="5" class="el lab" x="39.7" y="43.71" text-anchor="start">s′</text></svg></div>
+  <ol class="steps"><li data-k="1"><b>Trouglovi ABC i KLM.</b> Projekcije oba trougla. Trouglovi su neprozirni.</li><li data-k="2"><b>Horizontala trougla KLM.</b> h kroz L (z = 1): h″ ∥ x₁₂ siječe K″M″ u 1″, ordinala daje 1′ na K′M′. h′ = L′1′.</li><li data-k="3"><b>x₁₃ ⊥ h′, treća projekcija.</b> Osa x₁₃ ⊥ h′, desno od crteža. Ordinale i visine z daju treće projekcije svih šest tačaka. KLM se vidi kao duž K‴L‴M‴, a ABC kao trougao.</li><li data-k="4"><b>Prodori stranica ABC.</b> Stranice A‴B‴ i C‴A‴ sijeku duž K‴M‴ u P‴ i 2‴: to su prodori pravih AB i CA kroz ravan KLM. Ordinale nazad daju P′ na A′B′ i 2′ na C′A′.</li><li data-k="5"><b>Presječnica i duž PQ.</b> s′ = P′2′ je presječnica ravni. Ona siječe K′L′ u Q′. Presjek trouglova je duž PQ: dio presječnice koji leži u oba trougla. P″ i Q″ se dobiju ordinalama na A″B″ i K″L″.</li><li data-k="6"><b>Vidljivost.</b> Vidljivost se mijenja u P i Q i na ukrštanjima ivica. U prvoj projekciji je vidljivo ono što je više (veći z), a u drugoj ono što je bliže (veći y). Visinu u nekom ukrštanju u prvoj projekciji možeš pročitati i u trećoj: dalje od x₁₃ je više.</li></ol>
+  <dl class="results"><div class="rr"><dt>Prodor AB</dt><dd>P(3,76; 3,1; 1,46) (na vježbi isti)</dd></div><div class="rr"><dt>Prodor KL</dt><dd>Q(3,66; 1,21; 3,3) (na vježbi isti)</dd></div><div class="rr"><dt>Presjek</dt><dd>duž PQ; tačka 2 na CA je van trougla KLM i služi samo za presječnicu</dd></div></dl>
+  
+</figure>
+<div class="box"><h4>Vidljivost, uvijek isto</h4>
+<ul>
+  <li>Vidljivost se mijenja samo u tačkama presjeka (P, Q) i na ukrštanjima ivica u projekciji.</li>
+  <li><b>Prva projekcija</b> se gleda odozgo: od dvije ivice koje se ukrštaju vidljiva je ona sa većim z. Uz transformaciju to čitaš iz treće projekcije: obje tačke ukrštanja su na istoj ordinali, a viša je ona dalje od x₁₃.</li>
+  <li><b>Druga projekcija</b> se gleda sprijeda: vidljiva je ivica sa većim y. To čitaš iz prve projekcije: povuci ordinalu iz ukrštanja u drugoj projekciji i vidi koja je ivica dalje od x₁₂.</li>
+  <li>Dovoljno je odrediti jedno ukrštanje po ivici. Ostatak ivice slijedi: vidljivost se mijenja tek u sljedećoj tački presjeka ili ukrštanja.</li>
+</ul></div>
+<p><b>Trougao i četvorougao</b> (vježba 5.1, O₁) rješavaš isto. Prvo provjeri da četvorougao leži u jednoj ravni: sredine dijagonala se moraju poklapati (paralelogram), ili četvrti vrh leži u ravni prva tri. Onda četvorougao možeš transformisati u duž preko horizontale kroz jedan vrh.</p>
+<div class="next"><button type="button" class="nextb" data-go="osnove">Dalje: Bez transformacije →</button></div>
+</section>
+
+<!-- ===================================================== -->
+<section id="osnove" class="panel" role="tabpanel" aria-labelledby="t-osnove" hidden>
+<p class="sn">Podsjetnik</p>
+<h2>Bez transformacije: osnove koje trebaju i dalje</h2>
+<p>Ovi koraci nemaju verziju sa transformacijom, ili ih transformacija ne bi skratila. Pojavljuju se u svakom zadatku kao ulaz.</p>
+<div class="two">
+<div class="box"><h4>Tačka i prava</h4><ul>
+  <li>A′ = (x, y) ispod ose, A″ = (x, z) iznad. Treća projekcija: y preko prave pod 45°, z vodoravno. <a href="https://djuk400.github.io/Nacrtna-Geometrija-Zadaci-Sa-Vijezbi/vjezba-2.1/">2.1</a></li>
+  <li>Prodori: P₁ gdje a″ siječe x₁₂ (pa ordinala do a′), P₂ gdje a′ siječe x₁₂ (pa do a″), P₃ na osi z.</li>
+  <li>Vidljivost prave: a′ za z &gt; 0, a″ za y &gt; 0, a‴ za x &gt; 0.</li>
+  <li>Oktanti: I–IV za x &gt; 0, V–VIII za x &lt; 0. Po (y, z): I (+, +), II (−, +), III (−, −), IV (+, −). <a href="https://djuk400.github.io/Nacrtna-Geometrija-Zadaci-Sa-Vijezbi/vjezba-6/">6.2 O₁</a></li>
+  <li>Prava ∥ F pod uglom prema H: b′ ∥ x₁₂, b″ pod zadatim uglom. Već je u pravoj veličini u drugoj projekciji. Prava ∥ H pod uglom prema F: b″ ∥ x₁₂, b′ pod uglom. <a href="https://djuk400.github.io/Nacrtna-Geometrija-Zadaci-Sa-Vijezbi/vjezba-2.2/">2.2 g</a></li>
+  <li>Tačke prave na udaljenosti r od ose y: osa y je u drugoj projekciji tačka O, pa kružnica poluprečnika r oko O siječe a″. <a href="https://djuk400.github.io/Nacrtna-Geometrija-Zadaci-Sa-Vijezbi/vjezba-2.2/">2.2 d</a></li>
+</ul></div>
+<div class="box"><h4>Ravan</h4><ul>
+  <li>T(p; q; r): tragovi kroz odsječke na osama. ∞ znači da je ravan paralelna sa tom osom. <a href="https://djuk400.github.io/Nacrtna-Geometrija-Zadaci-Sa-Vijezbi/vjezba-3/">3 O₁–O₂</a></li>
+  <li>Ravan iz tri tačke ili dvije prave: T₁ kroz prve prodore, T₂ kroz druge, oba kroz istu tačku na x₁₂. <a href="https://djuk400.github.io/Nacrtna-Geometrija-Zadaci-Sa-Vijezbi/vjezba-3/">3 O₃</a></li>
+  <li>Tačka u ravni: horizontala h′ ∥ T₁, prodor kroz F na T₂, h″ ∥ x₁₂.</li>
+  <li>Nagibnice: n₁′ ⊥ T₁ (prva), n₂″ ⊥ T₂ (druga).</li>
+  <li>Presjek dvije ravni: istoimeni tragovi se sijeku u prodorima presječnice. Tri ravni: dvije presječnice se sijeku u traženoj tački. <a href="https://djuk400.github.io/Nacrtna-Geometrija-Zadaci-Sa-Vijezbi/vjezba-3/">3 O₄–O₅</a></li>
+</ul></div>
+<div class="box"><h4>Normale i paralelne ravni</h4><ul>
+  <li>Normala na ravan: n′ ⊥ T₁ (⊥ h′), n″ ⊥ T₂ (⊥ f″). <a href="https://djuk400.github.io/Nacrtna-Geometrija-Zadaci-Sa-Vijezbi/vjezba-4/">4 O₅</a></li>
+  <li>Ravan kroz pravu a, normalna na ravan T: sadrži pravu a i normalu na T iz jedne tačke prave. Tragovi kroz prodore obje prave. <a href="https://djuk400.github.io/Nacrtna-Geometrija-Zadaci-Sa-Vijezbi/vjezba-4/">4 O₂</a>, <a href="https://djuk400.github.io/Nacrtna-Geometrija-Zadaci-Sa-Vijezbi/vjezba-6/">6.2 O₁ c</a></li>
+  <li>Ravan kroz tačku, paralelna sa T: tragovi ∥ T₁ i T₂, kroz prodor horizontale ili frontale te tačke. <a href="https://djuk400.github.io/Nacrtna-Geometrija-Zadaci-Sa-Vijezbi/vjezba-4/">4 O₅</a></li>
+  <li>Simetralna ravan duži AB: kroz sredinu S, tragovi ⊥ A′B′ i ⊥ A″B″ (h′ ⊥ A′B′). Njen ugao sa F dalje ide transformacijom: x₂₃ ⊥ R₂. <a href="https://djuk400.github.io/Nacrtna-Geometrija-Zadaci-Sa-Vijezbi/vjezba-4/">4 O₁</a></li>
+</ul></div>
+<div class="box"><h4>Kosa projekcija</h4><p>Zadaci u kosoj projekciji (2.1 O₁ i O₃, 3 O₁ i O₄) rade se po pravilima kose projekcije: osa y pod 30° prema −x, bez skraćenja, kao na listu. Transformacija se tu ne koristi. Na K1 je to obično prvi dio O₁ (1 bod). <a href="https://djuk400.github.io/Nacrtna-Geometrija-Zadaci-Sa-Vijezbi/vjezba-2.1/">2.1</a></p></div>
+</div>
+<div class="next"><button type="button" class="nextb" data-go="greske">Dalje: Greške →</button></div>
+</section>
+
+<!-- ===================================================== -->
+<section id="greske" class="panel" role="tabpanel" aria-labelledby="t-greske" hidden>
+<p class="sn">Kontrola</p>
+<h2>Česte greške i provjere</h2>
+<h3>Greške</h3>
+<ul>
+  <li>Kod x₂₃ nanesen z umjesto y, ili kod x₁₃ nanesen y umjesto z.</li>
+  <li>Kod x₃₄ ponovo nanesen z. Treba udaljenost prve projekcije od x₁₃ (odnosno druge od x₂₃).</li>
+  <li>Ordinale nacrtane vertikalno, a ne okomito na novu osu.</li>
+  <li>Negativna koordinata nanesena na istu stranu kao pozitivne.</li>
+  <li>Za ravan nacrtana osa paralelna sa h′. Za ravan osa ide <b>okomito</b> na h′, a paralelno ide samo za pravu.</li>
+  <li>Horizontala povučena kroz tačke različitih visina. h″ mora biti paralelna sa x₁₂.</li>
+  <li>Ugao mjeren od x₁₂ umjesto od nove ose.</li>
+</ul>
+<h3>Provjere na crtežu</h3>
+<ul>
+  <li>Tri vrha trougla u trećoj projekciji moraju biti na jednoj pravoj.</li>
+  <li>Prava veličina duži nikad nije kraća od njenih projekcija.</li>
+  <li>U Z2 obje tačke prave moraju pasti u istu tačku. Ako ne padaju, a‴ nije bila u pravoj veličini.</li>
+  <li>Kad vratiš tačku nazad, njene dvije projekcije moraju biti na istoj vertikalnoj ordinali.</li>
+</ul>
+<div class="box"><h4>Računska provjera (samo za kontrolu)</h4>
+<p>Na kolokvijumu se traži konstrukcija, ali kod kuće ovim možeš provjeriti izmjereno:</p>
+<ul>
+  <li>Dužina: |AB| = √(Δx² + Δy² + Δz²).</li>
+  <li>Ugao prave sa H: sin α = |Δz| / |AB|. Sa F: sin β = |Δy| / |AB|.</li>
+  <li>Ravan T(p; q; r) ima jednačinu x/p + y/q + z/r = 1, tj. koeficijente a = 1/p, b = 1/q, c = 1/r.</li>
+  <li>Ugao ravni sa H: cos α = |c| / √(a² + b² + c²). Sa F: cos β = |b| / √(a² + b² + c²).</li>
+  <li>Udaljenost tačke M(x, y, z) od ravni: d = |a·x + b·y + c·z − 1| / √(a² + b² + c²).</li>
+</ul></div>
+<div class="next"><button type="button" class="nextb" data-go="k1">Dalje: Plan za K1 →</button></div>
+</section>
+
+<!-- ===================================================== -->
+<section id="k1" class="panel" role="tabpanel" aria-labelledby="t-k1" hidden>
+<p class="sn">Kolokvijum</p>
+<h2>Plan za K1</h2>
+<p>Struktura K1 sa listova iz 2020–2023 (iz bilješki u tvom projektu) i gdje je šta u ovom tutorijalu:</p>
+<div class="tw"><table>
+<thead><tr><th>Dio</th><th>Šta se traži</th><th>Kako</th></tr></thead>
+<tbody>
+<tr><td>O₁ a</td><td>Kosa projekcija prave</td><td><a href="#osnove">bez transformacije</a></td></tr>
+<tr><td>O₁ b</td><td>Tri ortogonalne projekcije prave, prodori, vidljivost, oktanti</td><td><a href="#osnove">bez transformacije</a></td></tr>
+<tr><td>O₁ c/d</td><td>Prava veličina duži i nagibni ugao prema H ili F</td><td><a href="#ex-d1">Z1</a></td></tr>
+<tr><td>O₁ c/d</td><td>Simetralna ravan duži</td><td><a href="#osnove">tragovi bez transformacije</a>, ugao sa F <a href="#ex-d3">Z3</a></td></tr>
+<tr><td>O₁ c/d</td><td>Prava kroz tačku, paralelna sa H ili F, pod datim uglom</td><td><a href="#osnove">bez transformacije</a></td></tr>
+<tr><td>O₁ c/d</td><td>Tragovi ravni ako je a nagibnica, ugao sa H</td><td><a href="#prava">varijanta Z1</a></td></tr>
+<tr><td>O₂ a</td><td>Presjek dva trougla i vidljivost</td><td><a href="#ex-d10">Z3</a></td></tr>
+<tr><td>O₂ b</td><td>Tragovi ravni trougla</td><td><a href="#osnove">bez transformacije</a></td></tr>
+<tr><td>O₂ c</td><td>Prava veličina trougla i kružnica, ili udaljenost tačke od ravni trougla</td><td><a href="#ex-d5">Z3 + Z4</a> ili <a href="#ex-d4">Z3</a></td></tr>
+</tbody></table></div>
+<div class="box warn"><h4>Šta nije sigurno</h4><ul>
+  <li>Da li profesor na K1 dozvoljava transformaciju i tamo gdje se na vježbama radilo obaranjem. Ako zadatak kaže „obaranjem”, radi obaranjem.</li>
+  <li>Da li se kružnica traži i u projekcijama (elipsa) ili samo u pravoj veličini.</li>
+  <li>Struktura K1 je iz starijih kolokvijuma. Nema garancije da će ove godine biti ista.</li>
+</ul></div>
+</section>
+
+<footer>
+<p>Rezultati svih primjera provjereni su računski i poklapaju se sa rješenjima na tvojim stranicama sa vježbi. Crteži su u razmjeri 1 : 1, kvadrat mreže je 1 cm.</p>
+</footer>
+</main>
+
+<script>
+(function(){
+  document.querySelectorAll('.ex').forEach(function(ex){
+    var els = ex.querySelectorAll('.drw .el');
+    var btns = ex.querySelectorAll('.sb');
+    var items = ex.querySelectorAll('.steps li');
+    var max = items.length;
+    function set(k){
+      var all = (k === 'all'); var cur = all ? max : +k;
+      els.forEach(function(el){
+        var s = +el.getAttribute('data-s'); var e = el.getAttribute('data-e');
+        var off = s > cur || (e !== null && cur > +e);
+        if (all && e !== null) off = cur > +e;
+        el.classList.toggle('off', off);
+        el.classList.toggle('past', !all && !off && s < cur);
+      });
+      btns.forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-k') === String(k)); });
+      items.forEach(function(li){ li.classList.toggle('cur', !all && li.getAttribute('data-k') === String(k)); });
+    }
+    btns.forEach(function(b){ b.addEventListener('click', function(){ set(b.getAttribute('data-k')); }); });
+    items.forEach(function(li){ li.addEventListener('click', function(){ set(li.getAttribute('data-k')); }); });
+    set('all');
+  });
+})();
+
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('.tabs>button')), bar=document.querySelector('.tabs');
+  function show(id, focusEl){
+    var ok=false;
+    tabs.forEach(function(b){var on=b.dataset.tab===id; if(on) ok=true; b.classList.toggle('on',on); b.setAttribute('aria-selected',on?'true':'false');
+      var pn=document.getElementById(b.dataset.tab); if(pn) pn.hidden=!on;});
+    if(!ok) return false;
+    var cur=bar.querySelector('.on'); if(cur && cur.scrollIntoView) cur.scrollIntoView({block:'nearest',inline:'nearest'});
+    return true;
+  }
+  function panelOf(el){ while(el && !(el.classList && el.classList.contains('panel'))) el=el.parentNode; return el; }
+  function go(hash, scroll){
+    var id=(hash||'').replace('#',''); if(!id) return false;
+    var el=document.getElementById(id); if(!el) return false;
+    var pn=panelOf(el); if(!pn) return false;
+    show(pn.id);
+    if(scroll){ var y = el===pn ? bar.offsetTop : el.getBoundingClientRect().top + window.pageYOffset - bar.offsetHeight - 12; window.scrollTo(0, Math.max(0,y)); }
+    return true;
+  }
+  tabs.forEach(function(b){ b.addEventListener('click', function(){ show(b.dataset.tab); try{history.replaceState(null,'','#'+b.dataset.tab)}catch(e){location.hash=b.dataset.tab}
+    window.scrollTo(0, Math.min(window.pageYOffset, bar.offsetTop)); }); });
+  document.querySelectorAll('.nextb').forEach(function(b){ b.addEventListener('click', function(){ show(b.dataset.go); try{history.replaceState(null,'','#'+b.dataset.go)}catch(e){}
+    window.scrollTo(0, bar.offsetTop); }); });
+  document.addEventListener('click', function(e){
+    var a=e.target.closest && e.target.closest('a[href^="#"]'); if(!a) return;
+    if(go(a.getAttribute('href'), true)){ e.preventDefault(); try{history.replaceState(null,'',a.getAttribute('href'))}catch(err){} }
+  });
+  window.addEventListener('hashchange', function(){ go(location.hash, true); });
+  if(location.hash) go(location.hash, true);
+})();
+</script>
+
+<!--fk-legal:start--><div class="fk-legal" style="box-sizing:border-box;max-width:var(--fk-w,1080px);margin:28px auto 0;padding:12px max(16px,env(safe-area-inset-right,0px)) 28px max(16px,env(safe-area-inset-left,0px))"><p style="margin:0;padding-top:10px;border-top:1px solid var(--fk-rule,#c8d1ce);font:11.5px/1.45 var(--fk-body,system-ui,sans-serif);color:var(--fk-ink2,#4b5761);max-width:90ch;opacity:.85"><b>Odricanje od odgovornosti.</b> Sadržaj ovog sajta služi isključivo za vježbu i ličnu pripremu i nije zvanični materijal fakulteta ni predmetnih nastavnika. Sajt nije povezan sa Univerzitetom u Banjoj Luci ni sa Građevinskim fakultetom. Autor ne garantuje tačnost, potpunost ni aktuelnost pitanja, odgovora, rješenja i postupaka, niti da će se bilo koje pitanje ili tip zadatka pojaviti na kolokvijumu ili ispitu. Sajt se koristi na sopstvenu odgovornost: autor ne odgovara za rezultate na kolokvijumima i ispitima, za odluke donesene na osnovu sadržaja, niti za bilo kakvu direktnu ili indirektnu štetu nastalu korištenjem sajta. Za tačne informacije mjerodavni su zvanični materijali i predmetni nastavnici. Greške, pitanja i zahtjeve za uklanjanje sadržaja (npr. ako smatrate da je nešto objavljeno bez dozvole nosioca autorskih prava) pošaljite preko <a href="https://github.com/DjUK400/djuk400.github.io/issues" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">kontakt stranice na GitHubu</a>.</p></div><!--fk-legal:end-->
+</body>
+</html>
